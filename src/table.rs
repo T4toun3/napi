@@ -67,6 +67,15 @@ impl Table for TagTable {
             .flatten()
             .collect::<Vec<&str>>();
 
+        //Pourquoi ça ne marche pas ?
+        //let html_tags = html
+        //    .after(r#"<div class="container" id="tag-container">"#)
+        //    .before(r#"</div>"#)?
+        //    .split(r#"<section"#)
+        //    .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
+        //    .flatten()
+        //    .collect::<Vec<&str>>();
+
         Some(
             html_tags
                 .into_iter()
