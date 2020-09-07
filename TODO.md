@@ -4,6 +4,7 @@
 - Create table for categorie and language
 - Create table sort by count
 - Sort table by count
+- Impl iter for Table
 
 ### Doujinshi
 - Get similare doujinshis from a doujinshi
