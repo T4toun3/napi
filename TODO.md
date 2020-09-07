@@ -5,9 +5,11 @@
 - Create table sort by count
 - Sort table by count
 - Impl iter for Table
+- .to_owned()
 
 ### Doujinshi
 - Get similare doujinshis from a doujinshi
+- Replace all "doujishi" by "doujinshi"
 
 ### Other
 - Optimize mutlithreading for **merge_search_all_pages** and **new()** (Table)
