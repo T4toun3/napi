@@ -10,6 +10,7 @@
 ### Doujinshi
 - Get similare doujinshis from a doujinshi
 - Replace all "doujishi" by "doujinshi"
+- const fn pour le "skip" (optimisation)
 
 ### Other
 - Optimize mutlithreading for **merge_search_all_pages** and **new()** (Table)
