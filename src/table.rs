@@ -1,6 +1,6 @@
 use crate::string_utils::*;
 
-use crate::doujishi::Tag;
+use crate::doujin::Tag;
 
 pub trait Table {
     fn search_tag(html: &str) -> Option<Vec<Tag>>;
@@ -58,26 +58,14 @@ impl TagTable {
 
 impl Table for TagTable {
     fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        // Comment mettre le tout en une seul ligne ?
-        let after_tags: Option<&str> = html.after(r#"<div class="container" id="tag-container">"#);
-        let html_tags = after_tags
-            .before(r#"</div>"#)?
-            .split(r#"<section"#)
-            .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-            .flatten()
-            .collect::<Vec<&str>>();
-
-        //Pourquoi ça ne marche pas ?
-        //let html_tags = html
-        //    .after(r#"<div class="container" id="tag-container">"#)
-        //    .before(r#"</div>"#)?
-        //    .split(r#"<section"#)
-        //    .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-        //    .flatten()
-        //    .collect::<Vec<&str>>();
-
         Some(
-            html_tags
+            html
+           .after(r#"<div class="container" id="tag-container">"#)
+           .before(r#"</div>"#)?
+           .split(r#"<section"#)
+           .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
+           .flatten()
+           .collect::<Vec<&str>>()
                 .into_iter()
                 .flat_map(|x| {
                     Some(Tag {
@@ -161,16 +149,14 @@ impl ArtistTable {
 
 impl Table for ArtistTable {
     fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        let after_artists: Option<&str> = html.after(r#"<div class="container" id="tag-container">"#);
-        let html_artists = after_artists
+        Some(
+            html
+            .after(r#"<div class="container" id="tag-container">"#)
             .before(r#"</div>"#)?
             .split(r#"<section"#)
             .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
             .flatten()
-            .collect::<Vec<&str>>();
-
-        Some(
-            html_artists
+            .collect::<Vec<&str>>()
                 .into_iter()
                 .flat_map(|x| {
                     Some(Tag {
@@ -254,16 +240,14 @@ impl CharacterTable {
 
 impl Table for CharacterTable {
     fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        let after_characters: Option<&str> = html.after(r#"<div class="container" id="tag-container">"#);
-        let html_characters = after_characters
+        Some(
+            html
+            .after(r#"<div class="container" id="tag-container">"#)
             .before(r#"</div>"#)?
             .split(r#"<section"#)
             .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
             .flatten()
-            .collect::<Vec<&str>>();
-
-        Some(
-            html_characters
+            .collect::<Vec<&str>>()
                 .into_iter()
                 .flat_map(|x| {
                     Some(Tag {
@@ -347,16 +331,14 @@ impl ParodieTable {
 
 impl Table for ParodieTable {
     fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        let after_parodies: Option<&str> = html.after(r#"<div class="container" id="tag-container">"#);
-        let html_parodies = after_parodies
+        Some(
+            html
+            .after(r#"<div class="container" id="tag-container">"#)
             .before(r#"</div>"#)?
             .split(r#"<section"#)
             .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
             .flatten()
-            .collect::<Vec<&str>>();
-
-        Some(
-            html_parodies
+            .collect::<Vec<&str>>()
                 .into_iter()
                 .flat_map(|x| {
                     Some(Tag {
@@ -441,16 +423,14 @@ impl GroupTable {
 
 impl Table for GroupTable {
     fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        let after_groups: Option<&str> = html.after(r#"<div class="container" id="tag-container">"#);
-        let html_groups = after_groups
+        Some(
+            html
+            .after(r#"<div class="container" id="tag-container">"#)
             .before(r#"</div>"#)?
             .split(r#"<section"#)
             .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
             .flatten()
-            .collect::<Vec<&str>>();
-
-        Some(
-            html_groups
+            .collect::<Vec<&str>>()
                 .into_iter()
                 .flat_map(|x| {
                     Some(Tag {
