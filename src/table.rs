@@ -43,7 +43,42 @@ impl TagTable {
                 .par_iter()
                 .flat_map(|x| {
                     if let Some(t) = Self::search_tag(x) {
-                        //println!("Succes to searching tags page {}", x);
+                        Some(t)
+                    } else {
+                        println!("Error while searching tags page {}", x);
+                        None
+                    }
+                })
+                .flatten()
+                .collect::<Vec<Tag>>()
+        })
+    }
+
+    pub fn new_by_popularity() -> Option<Self> {
+        use rayon::prelude::*;
+        let nbr_page = reqwest::blocking::get("https://nhentai.net/tags/popular")
+            .ok()?
+            .text()
+            .ok()?
+            .after(r#"<section class="pagination">"#)
+            .before(r#"</section>"#)
+            .between(r#"class="next""#, r#"" class="last""#)
+            .after("page=")?
+            .parse::<u32>()
+            .ok()?;
+        
+        let vec_html = (1..nbr_page + 1)
+            .flat_map(|x| {
+                let url: String = format!("https://nhentai.net/tags/popular?page={}", x);
+                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
+            })
+            .collect::<Vec<String>>();
+
+        Some(Self {
+            tags: vec_html
+                .par_iter()
+                .flat_map(|x| {
+                    if let Some(t) = Self::search_tag(x) {
                         Some(t)
                     } else {
                         println!("Error while searching tags page {}", x);
@@ -192,7 +227,6 @@ impl Table for ArtistTable {
         self.artists.iter().min_by_key(|t| t.count)
     }
 }
-
 
 // CharacterTable
 #[derive(Debug)]
