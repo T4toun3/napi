@@ -5,9 +5,12 @@
 - Create table sort by count
 - Sort table by count
 - Impl iter for Table
+- .to_owned()
 
 ## Doujinshi
 - Get similare doujinshis from a doujinshi
+- Replace all "doujishi" by "doujinshi"
+- const fn pour le "skip" (optimisation)
 
 ## Search
 - Get popular doujinshi
