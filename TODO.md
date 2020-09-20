@@ -1,15 +1,18 @@
 # NAPI
 
-### Table
+## Table
 - Create table for categorie and language
 - Create table sort by count
 - Sort table by count
 - Impl iter for Table
 
-### Doujinshi
+## Doujinshi
 - Get similare doujinshis from a doujinshi
 
-### Other
+## Search
+- Get popular doujinshi
+
+## Other
 - Optimize mutlithreading for **merge_search_all_pages** and **new()** (Table)
 
 # GITHUB
