@@ -1,7 +1,13 @@
 use std::collections::HashMap;
 
+use crate::search::SearchEntry;
+
+const fn none() -> Option<Vec<SearchEntry>> {
+    None
+}
+
 #[derive(serde::Deserialize, Debug)]
-pub struct Doujishi {
+pub struct Doujin {
     pub id: u32,
     pub media_id: String,
     pub title: HashMap<String, String>, // Lang - Title
@@ -10,19 +16,30 @@ pub struct Doujishi {
     pub num_pages: u16,
     pub images: Images,
     pub num_favorites: u32,
+    #[serde(default = "none")]
+    pub similars: Option<Vec<SearchEntry>>,
 }
 
-impl Doujishi {
+impl Doujin {
     pub fn new(id: u32) -> Option<Self> {
         use crate::string_utils::StringUtils;
-        reqwest::blocking::get(&format!("http://nhentai.net/g/{}/", id))
+        reqwest::blocking::get(&format!("http://nhentai.net/g/{}/",id))
             .ok()?
             .text()
             .ok()
             .after("JSON.parse(\"")
             .before("\");")
-            .map(|x| serde_json::from_str(&x.replace("\\u0022", "\"").replace("\\u002F", "/")).ok())
+            .map(|x| serde_json::from_str(&x.replace("\\u0022","\"").replace("\\u002F","/")).ok())
             .flatten()
+    }
+
+    pub fn set_similars(&mut self) {
+        use crate::string_utils::StringUtils;
+        self.similars = Some(reqwest::blocking::get(&format!("http://nhentai.net/g/{}", self.id)).ok().unwrap().text().ok()
+            .after(r#"<h2>More Like This<h2>"#)
+            .before(r#"id="comment-post-container""#).unwrap()
+            .split(r#"<div class="gallery" data-tags=""#)
+            .flat_map(|x| SearchEntry::new(x)).collect::<Vec<SearchEntry>>());
     }
 
     pub fn get_page_image_url_small(&self, page: u16) -> Option<String> {
@@ -136,11 +153,23 @@ impl Doujishi {
             .filter(|tag| tag._type == "category")
             .collect::<Vec<&Tag>>()
     }
+
+    pub fn random() -> Self {
+        Self::from_str(
+            reqwest::blocking::get("https://nhentai.net/random/")
+                .unwrap()
+                .text()
+                .unwrap()
+                .as_ref(),
+        )
+        .unwrap()
+    }
+
 }
 
 use std::str::FromStr;
 
-impl FromStr for Doujishi {
+impl FromStr for Doujin {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {

@@ -92,17 +92,6 @@ impl Search {
             None
         }
     }
-
-    pub fn random() -> crate::doujishi::Doujishi {
-        crate::doujishi::Doujishi::from_str(
-            reqwest::blocking::get("https://nhentai.net/random/")
-                .unwrap()
-                .text()
-                .unwrap()
-                .as_ref(),
-        )
-        .unwrap()
-    }
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -197,7 +186,7 @@ impl FromStr for Sort {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(serde::Deserialize, Debug, PartialEq)]
 pub struct SearchEntry {
     pub thumb: String,
     pub id: u32,
@@ -220,7 +209,7 @@ impl SearchEntry {
         })
     }
 
-    pub fn fetch(&self) -> Option<crate::doujishi::Doujishi> {
-        crate::doujishi::Doujishi::new(self.id)
+    pub fn fetch(&self) -> Option<crate::doujin::Doujin> {
+        crate::doujin::Doujin::new(self.id)
     }
 }
