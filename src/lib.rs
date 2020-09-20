@@ -1,3 +1,7 @@
+
+#[macro_use]
+mod macros;
+
 pub mod string_utils;
 
 pub mod search;
@@ -18,11 +22,14 @@ mod tests {
     #[test]
     fn it_works() {
         let time_start = SystemTime::now();
+
+        new_table!(oui);
+
         /*let args = vec![SearchArgs::Page(8), SearchArgs::Page(9)];
         let url = Search::build_url_with_args(args);
         let search = Search::new(&url);*/
-        let search = Doujin::new(316932).unwrap(); // On fait une recherche sur cette url
-        println!("{:#?}", search.similars);
+        /*let search = Doujin::new(316932).unwrap(); // On fait une recherche sur cette url
+        println!("{:#?}", search.similars);*/
         /*let table = TagTable::new().unwrap();
         let table = ArtistTable::new().unwrap();
         let table = CharacterTable::new().unwrap();
