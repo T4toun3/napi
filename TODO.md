@@ -3,7 +3,7 @@
 ## Table
 - [ ] Create table for "categorie" and "language"
 - [x] Create table sort by popularity
-- [ ] Add to trait Table :
+- [x] Add to trait Table :
     `fn sort_by_popular(&mut self);`
     `fn sort_by_alphabetical(&mut self);`
 
