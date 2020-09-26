@@ -1,7 +1,3 @@
-
-#[macro_use]
-mod macros;
-
 pub mod string_utils;
 
 pub mod search;
@@ -23,7 +19,15 @@ mod tests {
     fn it_works() {
         let time_start = SystemTime::now();
 
-        new_table!(oui);
+        let artist_table1 = TagTable::new().unwrap();
+        let artist_table2 = TagTable::new_by_popularity().unwrap();
+
+        let mut artist_table2 = artist_table2;
+
+        artist_table2.sort_by_alphabetical();
+
+        println!("==== ARTIST_TABLE 1 ====\n{:#?}", artist_table1.tags[0]);
+        println!("==== ARTIST_TABLE 2 ====\n{:#?}", artist_table2.tags[0]);
 
         /*let args = vec![SearchArgs::Page(8), SearchArgs::Page(9)];
         let url = Search::build_url_with_args(args);
@@ -64,6 +68,6 @@ mod tests {
         println!("get_image_thumbnail : {}", doujin.get_image_thumbnail());
         println!("get_page_url : {}", doujin.get_page_url(1));
         //println!("get_pages_urls : {:?}", doujin.get_pages_urls());*/
-        println!("\n    Time to execute : {:?}\n", SystemTime::now().duration_since(time_start).expect("Time went backwards"));
+        println!("\nTime to execute: {:?}\n", SystemTime::now().duration_since(time_start).expect("Time went backwards"));
     }
 }
