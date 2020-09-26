@@ -19,15 +19,14 @@ mod tests {
     fn it_works() {
         let time_start = SystemTime::now();
 
-        let artist_table1 = TagTable::new().unwrap();
-        let artist_table2 = TagTable::new_by_popularity().unwrap();
+        let table1 = LanguageTable::new().unwrap();
+        let table2 = LanguageTable::new_by_popularity().unwrap();
 
-        let mut artist_table2 = artist_table2;
+        let mut table1 = table1;
+        table1.sort_by_popularity();
 
-        artist_table2.sort_by_alphabetical();
-
-        println!("==== ARTIST_TABLE 1 ====\n{:#?}", artist_table1.tags[0]);
-        println!("==== ARTIST_TABLE 2 ====\n{:#?}", artist_table2.tags[0]);
+        println!("==== ARTIST_TABLE 1 ====\n{:#?}", table1);
+        println!("==== ARTIST_TABLE 2 ====\n{:?}", table2);
 
         /*let args = vec![SearchArgs::Page(8), SearchArgs::Page(9)];
         let url = Search::build_url_with_args(args);
