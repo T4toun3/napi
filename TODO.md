@@ -13,6 +13,7 @@
 
 ## Search
 - Get popular doujinshi
+- Add way to set a maximun of page research
 
 ## Other
 - Optimize mutlithreading for `merge_search_all_pages` and `new()` (Table)
