@@ -1,10 +1,8 @@
 # NAPI
 
 ## Table
-- [ ] Create table for categorie and language
-- [x] Create table sort by count
-- [ ] Sort table by count
-- [ ] Impl iter for Table
+- [ ] Create table for "categorie" and "language"
+- [x] Create table sort by popularity
 - [ ] Add to trait Table :
     `fn sort_by_popular(&mut self);`
     `fn sort_by_alphabetical(&mut self);`
@@ -20,7 +18,7 @@
 - Optimize mutlithreading for `merge_search_all_pages` and `new()` (Table)
 
 # GITHUB
-- Add in README how to use napi
+- Add how to use napi in the README file
 
 # CRATE.IO
 - Publish napi on [crate.io](crate.io)
