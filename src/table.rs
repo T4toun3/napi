@@ -1,3 +1,6 @@
+extern crate derive_macro;
+use derive_macro::NewTable;
+
 use crate::string_utils::*;
 
 use crate::doujin::Tag;
@@ -8,87 +11,15 @@ pub trait Table {
     fn get_by_name(&self, name: &str) -> Option<&Tag>;
     fn max(&self) -> Option<&Tag>;
     fn min(&self) -> Option<&Tag>;
+    fn sort_by_popularity(&mut self);
+    fn sort_by_alphabetical(&mut self);
 }
 
 
 // TagTable
-#[derive(Debug)]
+#[derive(Debug, NewTable)]
 pub struct TagTable {
     pub tags: Vec<Tag>,
-}
-
-impl TagTable {
-    pub fn new() -> Option<Self> {
-        use rayon::prelude::*;
-        let nbr_page = reqwest::blocking::get("https://nhentai.net/tags/")
-            .ok()?
-            .text()
-            .ok()?
-            .after(r#"<section class="pagination">"#)
-            .before(r#"</section>"#)
-            .between(r#"class="next""#, r#"" class="last""#)
-            .after("page=")?
-            .parse::<u32>()
-            .ok()?;
-
-        let vec_html = (1..nbr_page + 1)
-            .flat_map(|x| {
-                let url: String = format!("https://nhentai.net/tags/?page={}", x);
-                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
-            })
-            .collect::<Vec<String>>();
-
-        Some(Self {
-            tags: vec_html
-                .par_iter()
-                .flat_map(|x| {
-                    if let Some(t) = Self::search_tag(x) {
-                        Some(t)
-                    } else {
-                        println!("Error while searching tags page {}", x);
-                        None
-                    }
-                })
-                .flatten()
-                .collect::<Vec<Tag>>()
-        })
-    }
-
-    pub fn new_by_popularity() -> Option<Self> {
-        use rayon::prelude::*;
-        let nbr_page = reqwest::blocking::get("https://nhentai.net/tags/popular")
-            .ok()?
-            .text()
-            .ok()?
-            .after(r#"<section class="pagination">"#)
-            .before(r#"</section>"#)
-            .between(r#"class="next""#, r#"" class="last""#)
-            .after("page=")?
-            .parse::<u32>()
-            .ok()?;
-        
-        let vec_html = (1..nbr_page + 1)
-            .flat_map(|x| {
-                let url: String = format!("https://nhentai.net/tags/popular?page={}", x);
-                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
-            })
-            .collect::<Vec<String>>();
-
-        Some(Self {
-            tags: vec_html
-                .par_iter()
-                .flat_map(|x| {
-                    if let Some(t) = Self::search_tag(x) {
-                        Some(t)
-                    } else {
-                        println!("Error while searching tags page {}", x);
-                        None
-                    }
-                })
-                .flatten()
-                .collect::<Vec<Tag>>()
-        })
-    }
 }
 
 impl Table for TagTable {
@@ -135,51 +66,21 @@ impl Table for TagTable {
     fn min(&self) -> Option<&Tag> {
         self.tags.iter().min_by_key(|t| t.count)
     }
+
+    fn sort_by_popularity(&mut self) {
+        self.tags.sort_by_key(|x| x.count)
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.tags.sort_by_cached_key(|x| x.name.to_owned())
+    }
 }
 
 
 // ArtistTable
-#[derive(Debug)]
+#[derive(Debug, NewTable)]
 pub struct ArtistTable {
-    pub artists: Vec<Tag>,
-}
-
-impl ArtistTable {
-    pub fn new() -> Option<Self> {
-        use rayon::prelude::*;
-        let nbr_page = reqwest::blocking::get("https://nhentai.net/artists/")
-            .ok()?
-            .text()
-            .ok()?
-            .after(r#"<section class="pagination">"#)
-            .before(r#"</section>"#)
-            .between(r#"class="next""#, r#"" class="last""#)
-            .after("page=")?
-            .parse::<u32>()
-            .ok()?;
-
-        let vec_html = (1..nbr_page + 1)
-            .flat_map(|x| {
-                let url: String = format!("https://nhentai.net/artists/?page={}", x);
-                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
-            })
-            .collect::<Vec<String>>();
-
-        Some(Self {
-            artists: vec_html
-                .par_iter()
-                .flat_map(|x| {
-                    if let Some(t) = Self::search_tag(x) {
-                        Some(t)
-                    } else {
-                        println!("Error while searching tags page {}", x);
-                        None
-                    }
-                })
-                .flatten()
-                .collect::<Vec<Tag>>()
-        })
-    }
+    pub artists: Vec<Tag>
 }
 
 impl Table for ArtistTable {
@@ -226,50 +127,20 @@ impl Table for ArtistTable {
     fn min(&self) -> Option<&Tag> {
         self.artists.iter().min_by_key(|t| t.count)
     }
+    
+    fn sort_by_popularity(&mut self) {
+        self.artists.sort_by_key(|x| x.count)
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.artists.sort_by_key(|x| x.name.to_owned())
+    }
 }
 
 // CharacterTable
-#[derive(Debug)]
+#[derive(Debug, NewTable)]
 pub struct CharacterTable {
     pub characters: Vec<Tag>,
-}
-
-impl CharacterTable {
-    pub fn new() -> Option<Self> {
-        use rayon::prelude::*;
-        let nbr_page = reqwest::blocking::get("https://nhentai.net/artists/")
-            .ok()?
-            .text()
-            .ok()?
-            .after(r#"<section class="pagination">"#)
-            .before(r#"</section>"#)
-            .between(r#"class="next""#, r#"" class="last""#)
-            .after("page=")?
-            .parse::<u32>()
-            .ok()?;
-
-        let vec_html = (1..nbr_page + 1)
-            .flat_map(|x| {
-                let url: String = format!("https://nhentai.net/artists/?page={}", x);
-                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
-            })
-            .collect::<Vec<String>>();
-
-        Some(Self {
-            characters: vec_html
-                .par_iter()
-                .flat_map(|x| {
-                    if let Some(t) = Self::search_tag(x) {
-                        Some(t)
-                    } else {
-                        println!("Error while searching tags page {}", x);
-                        None
-                    }
-                })
-                .flatten()
-                .collect::<Vec<Tag>>()
-        })
-    }
 }
 
 impl Table for CharacterTable {
@@ -316,51 +187,21 @@ impl Table for CharacterTable {
     fn min(&self) -> Option<&Tag> {
         self.characters.iter().min_by_key(|t| t.count)
     }
+    
+    fn sort_by_popularity(&mut self) {
+        self.characters.sort_by_key(|x| x.count)
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.characters.sort_by_key(|x| x.name.to_owned())
+    }
 }
 
 
 // ParodieTable
-#[derive(Debug)]
+#[derive(Debug, NewTable)]
 pub struct ParodieTable {
     pub parodies: Vec<Tag>,
-}
-
-impl ParodieTable {
-    pub fn new() -> Option<Self> {
-        use rayon::prelude::*;
-        let nbr_page = reqwest::blocking::get("https://nhentai.net/parodies/")
-            .ok()?
-            .text()
-            .ok()?
-            .after(r#"<section class="pagination">"#)
-            .before(r#"</section>"#)
-            .between(r#"class="next""#, r#"" class="last""#)
-            .after("page=")?
-            .parse::<u32>()
-            .ok()?;
-
-        let vec_html = (1..nbr_page + 1)
-            .flat_map(|x| {
-                let url: String = format!("https://nhentai.net/parodies/?page={}", x);
-                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
-            })
-            .collect::<Vec<String>>();
-
-        Some(Self {
-            parodies: vec_html
-                .par_iter()
-                .flat_map(|x| {
-                    if let Some(t) = Self::search_tag(x) {
-                        Some(t)
-                    } else {
-                        println!("Error while searching tags page {}", x);
-                        None
-                    }
-                })
-                .flatten()
-                .collect::<Vec<Tag>>()
-        })
-    }
 }
 
 impl Table for ParodieTable {
@@ -407,52 +248,22 @@ impl Table for ParodieTable {
     fn min(&self) -> Option<&Tag> {
         self.parodies.iter().min_by_key(|t| t.count)
     }
+    
+    fn sort_by_popularity(&mut self) {
+        self.parodies.sort_by_key(|x| x.count)
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.parodies.sort_by_key(|x| x.name.to_owned())
+    }
 }
 
 
 
 // ParodieTable
-#[derive(Debug)]
+#[derive(Debug, NewTable)]
 pub struct GroupTable {
     pub groups: Vec<Tag>,
-}
-
-impl GroupTable {
-    pub fn new() -> Option<Self> {
-        use rayon::prelude::*;
-        let nbr_page = reqwest::blocking::get("https://nhentai.net/groups/")
-            .ok()?
-            .text()
-            .ok()?
-            .after(r#"<section class="pagination">"#)
-            .before(r#"</section>"#)
-            .between(r#"class="next""#, r#"" class="last""#)
-            .after("page=")?
-            .parse::<u32>()
-            .ok()?;
-
-        let vec_html = (1..nbr_page + 1)
-            .flat_map(|x| {
-                let url: String = format!("https://nhentai.net/groups/?page={}", x);
-                Some(reqwest::blocking::get(&url).ok()?.text().ok()?)
-            })
-            .collect::<Vec<String>>();
-
-        Some(Self {
-            groups: vec_html
-                .par_iter()
-                .flat_map(|x| {
-                    if let Some(t) = Self::search_tag(x) {
-                        Some(t)
-                    } else {
-                        println!("Error while searching tags page {}", x);
-                        None
-                    }
-                })
-                .flatten()
-                .collect::<Vec<Tag>>()
-        })
-    }
 }
 
 impl Table for GroupTable {
@@ -498,5 +309,13 @@ impl Table for GroupTable {
 
     fn min(&self) -> Option<&Tag> {
         self.groups.iter().min_by_key(|t| t.count)
+    }
+
+    fn sort_by_popularity(&mut self) {
+        self.groups.sort_by_key(|x| x.count)
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.groups.sort_by_key(|x| x.name.to_owned())
     }
 }
