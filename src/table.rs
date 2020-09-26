@@ -1,12 +1,13 @@
 extern crate derive_macro;
-use derive_macro::NewTable;
+use derive_macro::{NewTable};
 
 use crate::string_utils::*;
 
 use crate::doujin::Tag;
 
 pub trait Table {
-    fn search_tag(html: &str) -> Option<Vec<Tag>>;
+    fn get(&self, index: usize) -> Option<&Tag>;
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag>;
     fn get_by_id(&self, id: u32) -> Option<&Tag>;
     fn get_by_name(&self, name: &str) -> Option<&Tag>;
     fn max(&self) -> Option<&Tag>;
@@ -23,32 +24,12 @@ pub struct TagTable {
 }
 
 impl Table for TagTable {
-    fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        Some(
-            html
-           .after(r#"<div class="container" id="tag-container">"#)
-           .before(r#"</div>"#)?
-           .split(r#"<section"#)
-           .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-           .flatten()
-           .collect::<Vec<&str>>()
-                .into_iter()
-                .flat_map(|x| {
-                    Some(Tag {
-                        id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
-                            .parse::<u32>()
-                            .ok()?,
-                        _type: "tag".to_owned(),
-                        name: x[x.find(r#""name">"#)? + 7..x.find("</span><span")?].to_owned(),
-                        url: x[x.find("\"")? + 1..x.find(r#"" class="tag"#)?].to_owned(),
-                        count: x[x.find(r#""count">"#)? + 8..x.find("</span></a>")?]
-                            .replace("K", "000")
-                            .parse::<u32>()
-                            .ok()?,
-                    })
-                })
-                .collect::<Vec<Tag>>(),
-        )
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.tags.get(index)
+    }
+
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.tags.get_mut(index)
     }
 
     fn get_by_id(&self, id: u32) -> Option<&Tag> {
@@ -68,11 +49,11 @@ impl Table for TagTable {
     }
 
     fn sort_by_popularity(&mut self) {
-        self.tags.sort_by_key(|x| x.count)
+        self.tags.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
     }
 
     fn sort_by_alphabetical(&mut self) {
-        self.tags.sort_by_cached_key(|x| x.name.to_owned())
+        self.tags.sort_unstable_by_key(|x| x.name.to_owned())
     }
 }
 
@@ -84,34 +65,14 @@ pub struct ArtistTable {
 }
 
 impl Table for ArtistTable {
-    fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        Some(
-            html
-            .after(r#"<div class="container" id="tag-container">"#)
-            .before(r#"</div>"#)?
-            .split(r#"<section"#)
-            .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-            .flatten()
-            .collect::<Vec<&str>>()
-                .into_iter()
-                .flat_map(|x| {
-                    Some(Tag {
-                        id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
-                            .parse::<u32>()
-                            .ok()?,
-                        _type: "artist".to_owned(),
-                        name: x[x.find(r#""name">"#)? + 7..x.find("</span><span")?].to_owned(),
-                        url: x[x.find("\"")? + 1..x.find(r#"" class="tag"#)?].to_owned(),
-                        count: x[x.find(r#""count">"#)? + 8..x.find("</span></a>")?]
-                            .replace("K", "000")
-                            .parse::<u32>()
-                            .ok()?,
-                    })
-                })
-                .collect::<Vec<Tag>>(),
-        )
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.artists.get(index)
     }
 
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.artists.get_mut(index)
+    }
+    
     fn get_by_id(&self, id: u32) -> Option<&Tag> {
         self.artists.iter().find(|&t| t.id == id)
     }
@@ -127,13 +88,13 @@ impl Table for ArtistTable {
     fn min(&self) -> Option<&Tag> {
         self.artists.iter().min_by_key(|t| t.count)
     }
-    
+
     fn sort_by_popularity(&mut self) {
-        self.artists.sort_by_key(|x| x.count)
+        self.artists.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
     }
 
     fn sort_by_alphabetical(&mut self) {
-        self.artists.sort_by_key(|x| x.name.to_owned())
+        self.artists.sort_unstable_by_key(|x| x.name.to_owned())
     }
 }
 
@@ -144,34 +105,14 @@ pub struct CharacterTable {
 }
 
 impl Table for CharacterTable {
-    fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        Some(
-            html
-            .after(r#"<div class="container" id="tag-container">"#)
-            .before(r#"</div>"#)?
-            .split(r#"<section"#)
-            .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-            .flatten()
-            .collect::<Vec<&str>>()
-                .into_iter()
-                .flat_map(|x| {
-                    Some(Tag {
-                        id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
-                            .parse::<u32>()
-                            .ok()?,
-                        _type: "character".to_owned(),
-                        name: x[x.find(r#""name">"#)? + 7..x.find("</span><span")?].to_owned(),
-                        url: x[x.find("\"")? + 1..x.find(r#"" class="tag"#)?].to_owned(),
-                        count: x[x.find(r#""count">"#)? + 8..x.find("</span></a>")?]
-                            .replace("K", "000")
-                            .parse::<u32>()
-                            .ok()?,
-                    })
-                })
-                .collect::<Vec<Tag>>(),
-        )
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.characters.get(index)
     }
 
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.characters.get_mut(index)
+    }
+    
     fn get_by_id(&self, id: u32) -> Option<&Tag> {
         self.characters.iter().find(|&t| t.id == id)
     }
@@ -187,13 +128,13 @@ impl Table for CharacterTable {
     fn min(&self) -> Option<&Tag> {
         self.characters.iter().min_by_key(|t| t.count)
     }
-    
+
     fn sort_by_popularity(&mut self) {
-        self.characters.sort_by_key(|x| x.count)
+        self.characters.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
     }
 
     fn sort_by_alphabetical(&mut self) {
-        self.characters.sort_by_key(|x| x.name.to_owned())
+        self.characters.sort_unstable_by_key(|x| x.name.to_owned())
     }
 }
 
@@ -205,34 +146,14 @@ pub struct ParodieTable {
 }
 
 impl Table for ParodieTable {
-    fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        Some(
-            html
-            .after(r#"<div class="container" id="tag-container">"#)
-            .before(r#"</div>"#)?
-            .split(r#"<section"#)
-            .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-            .flatten()
-            .collect::<Vec<&str>>()
-                .into_iter()
-                .flat_map(|x| {
-                    Some(Tag {
-                        id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
-                            .parse::<u32>()
-                            .ok()?,
-                        _type: "parodie".to_owned(),
-                        name: x[x.find(r#""name">"#)? + 7..x.find("</span><span")?].to_owned(),
-                        url: x[x.find("\"")? + 1..x.find(r#"" class="tag"#)?].to_owned(),
-                        count: x[x.find(r#""count">"#)? + 8..x.find("</span></a>")?]
-                            .replace("K", "000")
-                            .parse::<u32>()
-                            .ok()?,
-                    })
-                })
-                .collect::<Vec<Tag>>(),
-        )
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.parodies.get(index)
     }
 
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.parodies.get_mut(index)
+    }
+    
     fn get_by_id(&self, id: u32) -> Option<&Tag> {
         self.parodies.iter().find(|&t| t.id == id)
     }
@@ -248,13 +169,13 @@ impl Table for ParodieTable {
     fn min(&self) -> Option<&Tag> {
         self.parodies.iter().min_by_key(|t| t.count)
     }
-    
+
     fn sort_by_popularity(&mut self) {
-        self.parodies.sort_by_key(|x| x.count)
+        self.parodies.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
     }
 
     fn sort_by_alphabetical(&mut self) {
-        self.parodies.sort_by_key(|x| x.name.to_owned())
+        self.parodies.sort_unstable_by_key(|x| x.name.to_owned())
     }
 }
 
@@ -267,34 +188,14 @@ pub struct GroupTable {
 }
 
 impl Table for GroupTable {
-    fn search_tag(html: &str) -> Option<Vec<Tag>> {
-        Some(
-            html
-            .after(r#"<div class="container" id="tag-container">"#)
-            .before(r#"</div>"#)?
-            .split(r#"<section"#)
-            .map(|x| x.split(r#"<a href="#).collect::<Vec<&str>>())
-            .flatten()
-            .collect::<Vec<&str>>()
-                .into_iter()
-                .flat_map(|x| {
-                    Some(Tag {
-                        id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
-                            .parse::<u32>()
-                            .ok()?,
-                        _type: "parodie".to_owned(),
-                        name: x[x.find(r#""name">"#)? + 7..x.find("</span><span")?].to_owned(),
-                        url: x[x.find("\"")? + 1..x.find(r#"" class="tag"#)?].to_owned(),
-                        count: x[x.find(r#""count">"#)? + 8..x.find("</span></a>")?]
-                            .replace("K", "000")
-                            .parse::<u32>()
-                            .ok()?,
-                    })
-                })
-                .collect::<Vec<Tag>>(),
-        )
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.groups.get(index)
     }
 
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.groups.get_mut(index)
+    }
+    
     fn get_by_id(&self, id: u32) -> Option<&Tag> {
         self.groups.iter().find(|&t| t.id == id)
     }
@@ -312,10 +213,276 @@ impl Table for GroupTable {
     }
 
     fn sort_by_popularity(&mut self) {
-        self.groups.sort_by_key(|x| x.count)
+        self.groups.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
     }
 
     fn sort_by_alphabetical(&mut self) {
-        self.groups.sort_by_key(|x| x.name.to_owned())
+        self.groups.sort_unstable_by_key(|x| x.name.to_owned())
+    }
+}
+
+
+// LanguageTable
+#[derive(Debug)]
+pub struct LanguageTable {
+    pub languages: Vec<Tag>
+}
+
+impl LanguageTable {
+    pub fn new() -> Option<Self> {
+        use rayon::prelude::*;
+        use std::fs::File;
+        use std::io::prelude::*;
+
+        #[derive(serde::Deserialize)]
+        struct Json {
+            language: Vec<String>,
+        }
+
+        let mut file = File::open("data/ungetable.json").ok()?;
+
+        let mut string = String::new();
+        file.read_to_string(&mut string).ok()?;
+
+        let json: Json = serde_json::from_str(&string).ok()?;
+
+        let vec_html = json.language.iter().flat_map(|l| {
+            Some(reqwest::blocking::get(&format!("https://nhentai.net/language/{}/", l)).ok()?.text().ok()?)
+        }).collect::<Vec<String>>();
+
+        Some(
+            Self {
+                languages: vec_html
+                    .par_iter()
+                    .flat_map(|x| {
+                        if let Some(t) = Self::search_tag(x) {
+                            Some(t)
+                        } else {
+                            println!("Error while searshing language {}", x);
+                            None
+                        }
+                    })
+                    .collect::<Vec<Tag>>()
+            }
+        )
+    }
+
+    pub fn new_by_popularity() -> Option<Self> {
+        use rayon::prelude::*;
+        use std::fs::File;
+        use std::io::prelude::*;
+
+        #[derive(serde::Deserialize)]
+        struct Json {
+            language: Vec<String>,
+        }
+
+        let mut file = File::open("data/ungetable.json").ok()?;
+
+        let mut string = String::new();
+        file.read_to_string(&mut string).ok()?;
+
+        let json: Json = serde_json::from_str(&string).ok()?;
+
+        let vec_html = json.language.iter().flat_map(|l| {
+            Some(reqwest::blocking::get(&format!("https://nhentai.net/language/{}/", l)).ok()?.text().ok()?)
+        }).collect::<Vec<String>>();
+
+        let mut table = Self {
+                languages: vec_html
+                    .par_iter()
+                    .flat_map(|x| {
+                        if let Some(t) = Self::search_tag(x) {
+                            Some(t)
+                        } else {
+                            println!("Error while searshing language {}", x);
+                            None
+                        }
+                    })
+                    .collect::<Vec<Tag>>()
+            };
+        table.sort_by_popularity();
+        Some(table)
+    }
+
+    fn search_tag(html: &str) -> Option<Tag> {
+        let html = html.between("<h1>", "</h1>").between(r#"<a href=""#, "</span></a>")?.to_owned();
+        Some(
+            Tag {
+                id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
+                _type: "language".to_owned(),
+                name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
+                url: html.before(r#"" class="tag"#)?.to_owned(),
+                count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
+            }
+        )
+    }
+
+}
+
+impl Table for LanguageTable {
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.languages.get(index)
+    }
+
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.languages.get_mut(index)
+    }
+    
+    fn get_by_id(&self, id: u32) -> Option<&Tag> {
+        self.languages.iter().find(|&t| t.id == id)
+    }
+
+    fn get_by_name(&self, name: &str) -> Option<&Tag> {
+        self.languages.iter().find(|&t| t.name == name)
+    }
+
+    fn max(&self) -> Option<&Tag> {
+        self.languages.iter().max_by_key(|t| t.count)
+    }
+
+    fn min(&self) -> Option<&Tag> {
+        self.languages.iter().min_by_key(|t| t.count)
+    }
+
+    fn sort_by_popularity(&mut self) {
+        self.languages.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.languages.sort_unstable_by_key(|x| x.name.to_owned())
+    }
+}
+
+
+// LanguageTable
+#[derive(Debug)]
+pub struct CategoryTable {
+    pub categories: Vec<Tag>
+}
+
+impl CategoryTable {
+    pub fn new() -> Option<Self> {
+        use rayon::prelude::*;
+        use std::fs::File;
+        use std::io::prelude::*;
+
+        #[derive(serde::Deserialize)]
+        struct Json {
+            category: Vec<String>,
+        }
+
+        let mut file = File::open("data/ungetable.json").ok()?;
+
+        let mut string = String::new();
+        file.read_to_string(&mut string).ok()?;
+
+        let json: Json = serde_json::from_str(&string).ok()?;
+
+        let vec_html = json.category.iter().flat_map(|l| {
+            Some(reqwest::blocking::get(&format!("https://nhentai.net/category/{}/", l)).ok()?.text().ok()?)
+        }).collect::<Vec<String>>();
+
+        Some(
+            Self {
+                categories: vec_html
+                    .par_iter()
+                    .flat_map(|x| {
+                        if let Some(t) = Self::search_tag(x) {
+                            Some(t)
+                        } else {
+                            println!("Error while searshing category {}", x);
+                            None
+                        }
+                    })
+                    .collect::<Vec<Tag>>()
+            }
+        )
+    }
+
+    pub fn new_by_popularity() -> Option<Self> {
+        use rayon::prelude::*;
+        use std::fs::File;
+        use std::io::prelude::*;
+
+        #[derive(serde::Deserialize)]
+        struct Json {
+            category: Vec<String>,
+        }
+
+        let mut file = File::open("data/ungetable.json").ok()?;
+
+        let mut string = String::new();
+        file.read_to_string(&mut string).ok()?;
+
+        let json: Json = serde_json::from_str(&string).ok()?;
+
+        let vec_html = json.category.iter().flat_map(|l| {
+            Some(reqwest::blocking::get(&format!("https://nhentai.net/category/{}/", l)).ok()?.text().ok()?)
+        }).collect::<Vec<String>>();
+
+        let mut table = Self {
+                categories: vec_html
+                    .par_iter()
+                    .flat_map(|x| {
+                        if let Some(t) = Self::search_tag(x) {
+                            Some(t)
+                        } else {
+                            println!("Error while searshing language {}", x);
+                            None
+                        }
+                    })
+                    .collect::<Vec<Tag>>()
+            };
+        table.sort_by_popularity();
+        Some(table)
+    }
+
+    fn search_tag(html: &str) -> Option<Tag> {
+        let html = html.between("<h1>", "</h1>").between(r#"<a href=""#, "</span></a>")?.to_owned();
+        Some(
+            Tag {
+                id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
+                _type: "language".to_owned(),
+                name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
+                url: html.before(r#"" class="tag"#)?.to_owned(),
+                count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
+            }
+        )
+    }
+
+}
+
+impl Table for CategoryTable {
+    fn get(&self, index: usize) -> Option<&Tag> {
+        self.categories.get(index)
+    }
+
+    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+        self.categories.get_mut(index)
+    }
+    
+    fn get_by_id(&self, id: u32) -> Option<&Tag> {
+        self.categories.iter().find(|&t| t.id == id)
+    }
+
+    fn get_by_name(&self, name: &str) -> Option<&Tag> {
+        self.categories.iter().find(|&t| t.name == name)
+    }
+
+    fn max(&self) -> Option<&Tag> {
+        self.categories.iter().max_by_key(|t| t.count)
+    }
+
+    fn min(&self) -> Option<&Tag> {
+        self.categories.iter().min_by_key(|t| t.count)
+    }
+
+    fn sort_by_popularity(&mut self) {
+        self.categories.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
+    }
+
+    fn sort_by_alphabetical(&mut self) {
+        self.categories.sort_unstable_by_key(|x| x.name.to_owned())
     }
 }
