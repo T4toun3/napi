@@ -170,3 +170,101 @@ fn fn_search_tag(data: &Data) -> TokenStream {
         _ => unimplemented!()
     }
 }
+
+
+#[proc_macro_derive(Table)]
+pub fn impl_table(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = parse_macro_input!(input as DeriveInput);
+
+    let name = ast.ident;
+
+    let impl_table_content = fn_impl_table_content(&ast.data);
+
+    let expanded = quote!{
+        impl Table for #name {
+            #impl_table_content
+        }
+    };
+
+    proc_macro::TokenStream::from(expanded)
+}
+
+fn fn_impl_table_content(data: &Data) -> TokenStream {
+    match data {
+        Data::Struct(data) => {
+            match &data.fields {
+                Fields::Named(fields) => {
+                    let name = &fields.named[0].ident;
+                    quote!{
+                        fn get(&self, index: usize) -> Option<&Tag> {
+                            self.#name.get(index)
+                        }
+                    
+                        fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+                            self.#name.get_mut(index)
+                        }
+                        
+                        fn get_by_id(&self, id: u32) -> Option<&Tag> {
+                            self.#name.iter().find(|&t| t.id == id)
+                        }
+                    
+                        fn get_by_name(&self, name: &str) -> Option<&Tag> {
+                            self.#name.iter().find(|&t| t.name == name)
+                        }
+                    
+                        fn max(&self) -> Option<&Tag> {
+                            self.#name.iter().max_by_key(|t| t.count)
+                        }
+                    
+                        fn min(&self) -> Option<&Tag> {
+                            self.#name.iter().min_by_key(|t| t.count)
+                        }
+                        fn sort_by_popularity(&mut self) {
+                            self.#name.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
+                        }
+                    
+                        fn sort_by_alphabetical(&mut self) {
+                            self.#name.sort_unstable_by_key(|x| x.name.to_owned())
+                        }
+                    }
+                }
+                _ => unimplemented!()
+            }
+        }
+        _ => unimplemented!()
+    }
+}
+
+// impl Table for CategoryTable {
+    // fn get(&self, index: usize) -> Option<&Tag> {
+    //     self.categories.get(index)
+    // }
+
+    // fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
+    //     self.categories.get_mut(index)
+    // }
+    
+    // fn get_by_id(&self, id: u32) -> Option<&Tag> {
+    //     self.categories.iter().find(|&t| t.id == id)
+    // }
+
+    // fn get_by_name(&self, name: &str) -> Option<&Tag> {
+    //     self.categories.iter().find(|&t| t.name == name)
+    // }
+
+    // fn max(&self) -> Option<&Tag> {
+    //     self.categories.iter().max_by_key(|t| t.count)
+    // }
+
+    // fn min(&self) -> Option<&Tag> {
+    //     self.categories.iter().min_by_key(|t| t.count)
+    // }
+
+//     fn sort_by_popularity(&mut self) {
+//         self.categories.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
+//     }
+
+//     fn sort_by_alphabetical(&mut self) {
+//         self.categories.sort_unstable_by_key(|x| x.name.to_owned())
+//     }
+// }
