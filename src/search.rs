@@ -82,6 +82,27 @@ impl Search {
         self.entries.extend(pages);
     }
 
+    pub fn merge_search_pages(&mut self, limit: u16) {
+        use std::cmp;
+        use rayon::prelude::*;
+        let o = self.get_current_page();
+        let pages: Vec<SearchEntry> = (1..cmp::max(limit, self.pages) + 1)
+            .into_par_iter()
+            .flat_map(|x| {
+                if x == o {
+                    None
+                } else if let Some(e) = self.search_page(x).map(|x| x.entries) {
+                    Some(e)
+                } else {
+                    println!("Error while searching page {}", x);
+                    None
+                }
+            })
+            .flatten()
+            .collect();
+        self.entries.extend(pages);
+    }
+
     pub fn search_page(&self, page: u16) -> Option<Search> {
         if self.pages >= page {
             let mut map = self.current_args.clone();
