@@ -52,7 +52,6 @@ pub struct GroupTable {
 }
 
 
-
 // LanguageTable
 #[derive(Debug, Table)]
 pub struct LanguageTable {
