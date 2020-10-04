@@ -33,7 +33,7 @@ impl Doujin {
             .flatten()
     }
 
-    pub fn set_similars(&mut self) {
+    pub fn generate_similars(&mut self) {
         use crate::string_utils::StringUtils;
         self.similars = Some(reqwest::blocking::get(&format!("http://nhentai.net/g/{}", self.id)).ok().unwrap().text().ok()
             .after(r#"<h2>More Like This<h2>"#)

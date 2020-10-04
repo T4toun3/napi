@@ -25,8 +25,8 @@ mod tests {
         let mut table1 = table1;
         table1.sort_by_popularity();
 
-        println!("==== ARTIST_TABLE 1 ====\n{:#?}", table1);
-        println!("==== ARTIST_TABLE 2 ====\n{:?}", table2);
+        println!("==== ARTIST_TABLE 1 ====\n{:#?}", table1.get(2));
+        println!("==== ARTIST_TABLE 2 ====\n{:?}", table2.max());
 
         /*let args = vec![SearchArgs::Page(8), SearchArgs::Page(9)];
         let url = Search::build_url_with_args(args);

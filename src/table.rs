@@ -1,5 +1,5 @@
 extern crate derive_macro;
-use derive_macro::{NewTable};
+use derive_macro::{NewTable, Table};
 
 use crate::string_utils::*;
 
@@ -18,212 +18,42 @@ pub trait Table {
 
 
 // TagTable
-#[derive(Debug, NewTable)]
+#[derive(Debug, NewTable, Table)]
 pub struct TagTable {
     pub tags: Vec<Tag>,
 }
 
-impl Table for TagTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.tags.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.tags.get_mut(index)
-    }
-
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.tags.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.tags.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.tags.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.tags.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.tags.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.tags.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
-
 
 // ArtistTable
-#[derive(Debug, NewTable)]
+#[derive(Debug, NewTable, Table)]
 pub struct ArtistTable {
     pub artists: Vec<Tag>
 }
 
-impl Table for ArtistTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.artists.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.artists.get_mut(index)
-    }
-    
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.artists.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.artists.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.artists.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.artists.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.artists.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.artists.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
 
 // CharacterTable
-#[derive(Debug, NewTable)]
+#[derive(Debug, NewTable, Table)]
 pub struct CharacterTable {
     pub characters: Vec<Tag>,
 }
 
-impl Table for CharacterTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.characters.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.characters.get_mut(index)
-    }
-    
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.characters.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.characters.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.characters.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.characters.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.characters.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.characters.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
-
 
 // ParodieTable
-#[derive(Debug, NewTable)]
+#[derive(Debug, NewTable, Table)]
 pub struct ParodieTable {
     pub parodies: Vec<Tag>,
 }
 
-impl Table for ParodieTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.parodies.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.parodies.get_mut(index)
-    }
-    
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.parodies.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.parodies.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.parodies.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.parodies.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.parodies.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.parodies.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
-
-
 
 // ParodieTable
-#[derive(Debug, NewTable)]
+#[derive(Debug, NewTable, Table)]
 pub struct GroupTable {
     pub groups: Vec<Tag>,
 }
 
-impl Table for GroupTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.groups.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.groups.get_mut(index)
-    }
-    
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.groups.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.groups.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.groups.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.groups.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.groups.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.groups.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
-
 
 // LanguageTable
-#[derive(Debug)]
+#[derive(Debug, Table)]
 pub struct LanguageTable {
     pub languages: Vec<Tag>
 }
@@ -320,43 +150,9 @@ impl LanguageTable {
 
 }
 
-impl Table for LanguageTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.languages.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.languages.get_mut(index)
-    }
-    
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.languages.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.languages.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.languages.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.languages.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.languages.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.languages.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
-
 
 // LanguageTable
-#[derive(Debug)]
+#[derive(Debug, Table)]
 pub struct CategoryTable {
     pub categories: Vec<Tag>
 }
@@ -453,36 +249,3 @@ impl CategoryTable {
 
 }
 
-impl Table for CategoryTable {
-    fn get(&self, index: usize) -> Option<&Tag> {
-        self.categories.get(index)
-    }
-
-    fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-        self.categories.get_mut(index)
-    }
-    
-    fn get_by_id(&self, id: u32) -> Option<&Tag> {
-        self.categories.iter().find(|&t| t.id == id)
-    }
-
-    fn get_by_name(&self, name: &str) -> Option<&Tag> {
-        self.categories.iter().find(|&t| t.name == name)
-    }
-
-    fn max(&self) -> Option<&Tag> {
-        self.categories.iter().max_by_key(|t| t.count)
-    }
-
-    fn min(&self) -> Option<&Tag> {
-        self.categories.iter().min_by_key(|t| t.count)
-    }
-
-    fn sort_by_popularity(&mut self) {
-        self.categories.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-    }
-
-    fn sort_by_alphabetical(&mut self) {
-        self.categories.sort_unstable_by_key(|x| x.name.to_owned())
-    }
-}
