@@ -50,6 +50,10 @@ impl Search {
         )
     }
 
+    pub fn search_populars(sort: Sort) -> Option<Self> {
+        Self::new(&Self::build_url_with_args(vec![SearchArgs::Sort(sort), SearchArgs::Text(r#""""#.to_owned())]))
+    }
+
     pub fn get_current_page(&self) -> u16 {
         if let Some(SearchArgs::Page(e)) = self
             .current_args
