@@ -19,5 +19,5 @@
 # GITHUB
 - [ ] Add how to use napi in the README file
 
-# CRATE.IO
-- [ ] Publish napi on [crate.io](crate.io)
+# CRATES.IO
+- [ ] Publish napi on [crates.io](crates.io)
