@@ -86,7 +86,7 @@ impl Search {
         use std::cmp;
         use rayon::prelude::*;
         let o = self.get_current_page();
-        let pages: Vec<SearchEntry> = (1..cmp::max(limit, self.pages) + 1)
+        let pages: Vec<SearchEntry> = (1..cmp::min(limit, self.pages) + 1)
             .into_par_iter()
             .flat_map(|x| {
                 if x == o {
