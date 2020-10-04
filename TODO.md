@@ -8,7 +8,7 @@
     - impl manually Deserialize
 
 ## Search
-- [ ] Get popular doujinshi
+- [x] Get popular doujinshi
 - [x] Add way to set a maximun of page research
 
 ## Rustianisation (en franglais)
