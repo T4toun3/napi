@@ -234,37 +234,3 @@ fn fn_impl_table_content(data: &Data) -> TokenStream {
         _ => unimplemented!()
     }
 }
-
-// impl Table for CategoryTable {
-    // fn get(&self, index: usize) -> Option<&Tag> {
-    //     self.categories.get(index)
-    // }
-
-    // fn get_mut(&mut self, index: usize) -> Option<&mut Tag> {
-    //     self.categories.get_mut(index)
-    // }
-    
-    // fn get_by_id(&self, id: u32) -> Option<&Tag> {
-    //     self.categories.iter().find(|&t| t.id == id)
-    // }
-
-    // fn get_by_name(&self, name: &str) -> Option<&Tag> {
-    //     self.categories.iter().find(|&t| t.name == name)
-    // }
-
-    // fn max(&self) -> Option<&Tag> {
-    //     self.categories.iter().max_by_key(|t| t.count)
-    // }
-
-    // fn min(&self) -> Option<&Tag> {
-    //     self.categories.iter().min_by_key(|t| t.count)
-    // }
-
-//     fn sort_by_popularity(&mut self) {
-//         self.categories.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
-//     }
-
-//     fn sort_by_alphabetical(&mut self) {
-//         self.categories.sort_unstable_by_key(|x| x.name.to_owned())
-//     }
-// }
