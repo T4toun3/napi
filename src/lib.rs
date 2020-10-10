@@ -20,7 +20,7 @@ mod tests {
         let time_start = SystemTime::now();
 
         /*let mut search_pop = Search::search_populars(Sort::Popular).unwrap();
-        search_pop.merge_search_pages(0);
+        search_pop.merge_search_pages(1);
         println!("All results:");
         for result in &search_pop.entries {
             println!("[{}] {}",result.id,result.name) // On affiche toutes les entrées trouvées
@@ -40,8 +40,8 @@ mod tests {
 
         /*let table = ArtistTable::new().unwrap();
         println!("Len = {:?}", table.len());
-        let table = CategoryTable::new().unwrap();
-        println!("Get = {:?}", table.get(table.len() - 1).unwrap());*/
+        let table = CategoryTable::new_by_popularity().unwrap();
+        println!("Get = {:?}", table.get(3).unwrap());*/
 
         /*let table = TagTable::new().unwrap();
         println!("Tag: {:?}", table.get(50).unwrap()._type);
@@ -50,29 +50,30 @@ mod tests {
         println!("{:?}", &table.max());
         println!("{:?}", &table.min());*/
 
-        /*search.merge_search_all_pages(); // On récupère toutes les autres pages dans la recherche et les ajoute dans entries en plus de la page précédente
+        /*let rand = Doujin::random();
+        println!("Ramdom doujin : {:?}", rand);*/
+        
+        /*let mut doujin = Doujin::new(316932).unwrap(); // On fait une recherche sur cette url
+        doujin.generate_similars();
+        println!("{:?}", doujin.similars);*/
+
+        /*let args = vec![SearchArgs::Page(2), SearchArgs::Page(3), SearchArgs::Text("hello".to_string())];
+        let url = Search::build_url_with_args(args);
+        println!("url = {}", url);
+        let mut search = Search::new(&url).unwrap();
+        search.merge_search_all_pages(); // On récupère toutes les autres pages dans la recherche et les ajoute dans entries en plus de la page précédente
         println!("All results:");
         for result in &search.entries {
             println!("[{}] {}",result.id,result.name) // On affiche toutes les entrées trouvées
-        }*/
-
-        /*let rand = Search::random();
-        println!("{:#?}", rand);*/
-        
-        /*let doujin = Doujin::new(316932).unwrap(); // On fait une recherche sur cette url
-        println!("{:#?}", doujin.similars);*/
-
-        /*let args = vec![SearchArgs::Page(8), SearchArgs::Page(9)];
-        let url = Search::build_url_with_args(args);
-        let search = Search::new(&url).unwrap();
-        let page = crate::doujin::Doujin::new(search.entries[0].id).unwrap(); // On prend la première page de la recherche
-        println!("{:#?}",page.get_pages_image_urls()); // On récupère l'url de toutes les images du manga
-        println!("{:#?}",Search::new("https://nhentai.net/search/?q=test&page=1&sort=popular-week"));*/
+        }
+        println!("{}", search.entries[0].id);
+        let page = Doujin::new(search.entries[0].id).unwrap(); // On prend la première page de la recherche
+        println!("{:?}",page.get_pages_image_urls()); // On récupère l'url de toutes les images du manga
+        println!("{:?}",Search::new("https://nhentai.net/search/?q=test&page=1&sort=popular-week"));*/
 
         /*let doujin = Doujin::new(327341).unwrap();
-        println!("{:#?}", doujin);*/
-
-        /*println!("get_page_image_url_small : {}", doujin.get_page_image_url_small(1).unwrap());
+        println!("{:?}", doujin);
+        println!("get_page_image_url_small : {}", doujin.get_page_image_url_small(1).unwrap());
         //println!("get_pages_image_urls_small : {:?}", doujin.get_pages_image_urls_small());
         println!("get_page_image_url : {}", doujin.get_page_image_url(1).unwrap());
         //println!("get_pages_image_urls : {:?}", doujin.get_pages_image_urls());
@@ -80,6 +81,7 @@ mod tests {
         println!("get_image_thumbnail : {}", doujin.get_image_thumbnail());
         println!("get_page_url : {}", doujin.get_page_url(1));
         //println!("get_pages_urls : {:?}", doujin.get_pages_urls());*/
+
         println!("\nTime to execute: {:?}\n", SystemTime::now().duration_since(time_start).expect("Time went backwards"));
     }
 }
