@@ -84,11 +84,12 @@ impl LanguageTable {
             Self {
                 languages: vec_html
                     .par_iter()
-                    .flat_map(|x| {
+                    .enumerate()
+                    .flat_map(|(i, x)| {
                         if let Some(t) = Self::search_tag(x) {
                             Some(t)
                         } else {
-                            println!("Error while searshing language {}", x);
+                            println!("Error while searshing language {}", i + 1);
                             None
                         }
                     })
@@ -121,11 +122,12 @@ impl LanguageTable {
         let mut table = Self {
                 languages: vec_html
                     .par_iter()
-                    .flat_map(|x| {
+                    .enumerate()
+                    .flat_map(|(i, x)| {
                         if let Some(t) = Self::search_tag(x) {
                             Some(t)
                         } else {
-                            println!("Error while searshing language {}", x);
+                            println!("Error while searshing language {}", i + 1);
                             None
                         }
                     })
@@ -183,11 +185,12 @@ impl CategoryTable {
             Self {
                 categories: vec_html
                     .par_iter()
-                    .flat_map(|x| {
+                    .enumerate()
+                    .flat_map(|(i, x)| {
                         if let Some(t) = Self::search_tag(x) {
                             Some(t)
                         } else {
-                            println!("Error while searshing category {}", x);
+                            println!("Error while searshing category {}", i + 1);
                             None
                         }
                     })
@@ -220,11 +223,12 @@ impl CategoryTable {
         let mut table = Self {
                 categories: vec_html
                     .par_iter()
-                    .flat_map(|x| {
+                    .enumerate()
+                    .flat_map(|(i, x)| {
                         if let Some(t) = Self::search_tag(x) {
                             Some(t)
                         } else {
-                            println!("Error while searshing language {}", x);
+                            println!("Error while searshing category {}", i + 1);
                             None
                         }
                     })

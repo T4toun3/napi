@@ -59,11 +59,12 @@ fn fn_new(data: &Data) -> TokenStream {
                         Some(Self {
                             #name: vec_html
                                 .par_iter()
-                                .flat_map(|x| {
+                                .enumerate()
+                                .flat_map(|(i, x)| {
                                     if let Some(t) = Self::search_tag(x) {
                                         Some(t)
                                     } else {
-                                        println!(stringify!(Error while searching #name page {}), x);
+                                        println!(stringify!(Error while searching #name page {}), i + 1);
                                         None
                                     }
                                 })
@@ -103,15 +104,16 @@ fn fn_new_by_popularity(data: &Data) -> TokenStream {
                                 Some(reqwest::blocking::get(&format!("https://nhentai.net/{}/popular?page={}", stringify!(#name), x)).ok()?.text().ok()?)
                             })
                             .collect::<Vec<String>>();
-            
+
                         Some(Self {
                             #name: vec_html
                                 .par_iter()
-                                .flat_map(|x| {
+                                .enumerate()
+                                .flat_map(|(i, x)| {
                                     if let Some(t) = Self::search_tag(x) {
                                         Some(t)
                                     } else {
-                                        println!(stringify!(Error while searching #name page {}), x);
+                                        println!(stringify!(Error while searching #name page {}), i + 1);
                                         None
                                     }
                                 })
