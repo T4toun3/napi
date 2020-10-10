@@ -12,6 +12,7 @@ pub trait Table {
     fn get_by_name(&self, name: &str) -> Option<&Tag>;
     fn max(&self) -> Option<&Tag>;
     fn min(&self) -> Option<&Tag>;
+    fn len(&self) -> usize;
     fn sort_by_popularity(&mut self);
     fn sort_by_alphabetical(&mut self);
 }

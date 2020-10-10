@@ -221,6 +221,11 @@ fn fn_impl_table_content(data: &Data) -> TokenStream {
                         fn min(&self) -> Option<&Tag> {
                             self.#name.iter().min_by_key(|t| t.count)
                         }
+
+                        fn len(&self) -> usize {
+                            self.#name.len()
+                        }
+
                         fn sort_by_popularity(&mut self) {
                             self.#name.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
                         }
