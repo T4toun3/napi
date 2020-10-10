@@ -1,4 +1,4 @@
-pub mod string_utils;
+mod string_utils;
 
 pub mod search;
 
