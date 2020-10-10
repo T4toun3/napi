@@ -244,8 +244,8 @@ impl CategoryTable {
         Some(
             Tag {
                 id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
-                name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
                 _type: TagType::Category,
+                name: html.between("/category/", r#"/" class="tag"#)?.to_owned(),
                 url: html.before(r#"" class="tag"#)?.to_owned(),
                 count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
             }
@@ -253,4 +253,3 @@ impl CategoryTable {
     }
 
 }
-
