@@ -33,13 +33,15 @@ impl Doujin {
             .flatten()
     }
 
-    pub fn generate_similars(&mut self) {
+    pub fn generate_similars(&mut self) -> Option<()> {
         use crate::string_utils::StringUtils;
-        self.similars = Some(reqwest::blocking::get(&format!("http://nhentai.net/g/{}", self.id)).ok().unwrap().text().ok()
-            .after(r#"<h2>More Like This<h2>"#)
-            .before(r#"id="comment-post-container""#).unwrap()
+        let html = reqwest::blocking::get(&format!("http://nhentai.net/g/{}", self.id)).ok()?.text().ok()?;
+        self.similars = html
+            .after("<h2>More Like This</h2>")
+            .before("</div></div>")?
             .split(r#"<div class="gallery" data-tags=""#)
-            .flat_map(|x| SearchEntry::new(x)).collect::<Vec<SearchEntry>>());
+            .flat_map(|x| SearchEntry::new(x)).collect::<Vec<SearchEntry>>();
+        Some(())
     }
 
     pub fn get_page_image_url_small(&self, page: u16) -> Option<String> {
