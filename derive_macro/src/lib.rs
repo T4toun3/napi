@@ -153,7 +153,7 @@ fn fn_search_tag(data: &Data) -> TokenStream {
                                             id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
                                                 .parse::<u32>()
                                                 .ok()?,
-                                            _type: name_string,
+                                            _type: TagType::from(#name_string),
                                             name: x[x.find(r#""name">"#)? + 7..x.find("</span><span")?].to_owned(),
                                             url: x[x.find("\"")? + 1..x.find(r#"" class="tag"#)?].to_owned(),
                                             count: x[x.find(r#""count">"#)? + 8..x.find("</span></a>")?]

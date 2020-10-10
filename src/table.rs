@@ -3,7 +3,7 @@ use derive_macro::{NewTable, Table};
 
 use crate::string_utils::*;
 
-use crate::doujin::Tag;
+use crate::doujin::{Tag, TagType};
 
 pub trait Table {
     fn get(&self, index: usize) -> Option<&Tag>;
@@ -142,7 +142,7 @@ impl LanguageTable {
         Some(
             Tag {
                 id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
-                _type: "language".to_owned(),
+                _type: TagType::Language,
                 name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
                 url: html.before(r#"" class="tag"#)?.to_owned(),
                 count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
@@ -243,8 +243,8 @@ impl CategoryTable {
         Some(
             Tag {
                 id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
-                _type: "language".to_owned(),
                 name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
+                _type: TagType::Category,
                 url: html.before(r#"" class="tag"#)?.to_owned(),
                 count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
             }
