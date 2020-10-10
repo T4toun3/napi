@@ -67,10 +67,9 @@ impl Search {
     }
 
     pub fn merge_search_all_pages(&mut self) {
-        use rayon::prelude::*;
         let o = self.get_current_page();
         let pages: Vec<SearchEntry> = (1..self.pages + 1)
-            .into_par_iter()
+            .into_iter()
             .flat_map(|x| {
                 if x == o {
                     None
@@ -88,10 +87,9 @@ impl Search {
 
     pub fn merge_search_pages(&mut self, limit: u16) {
         use std::cmp;
-        use rayon::prelude::*;
         let o = self.get_current_page();
         let pages: Vec<SearchEntry> = (1..cmp::min(limit, self.pages) + 1)
-            .into_par_iter()
+            .into_iter()
             .flat_map(|x| {
                 if x == o {
                     None
