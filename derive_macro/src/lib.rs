@@ -136,6 +136,8 @@ fn fn_search_tag(data: &Data) -> TokenStream {
             match &data.fields {
                 Fields::Named(fields) => {
                     let name = &fields.named[0].ident;
+                    let name_string = &mut name.as_ref().unwrap().to_string();
+                    name_string.pop();
                     quote!{
                         Some(
                             html
@@ -147,8 +149,7 @@ fn fn_search_tag(data: &Data) -> TokenStream {
                             .collect::<Vec<&str>>()
                                     .into_iter()
                                     .flat_map(|x| {
-                                        let mut name_string = stringify!(#name).to_owned();
-                                        name_string.pop();
+
                                         Some(Tag {
                                             id: x[x.find("tag tag-")? + 8..x.find(r#" "><span"#)?]
                                                 .parse::<u32>()
