@@ -115,42 +115,42 @@ impl Doujin {
     pub fn get_artists(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| tag._type == "artist")
+            .filter(|tag| matches!(tag._type, TagType::Artist))
             .collect::<Vec<&Tag>>()
     }
 
     pub fn get_languages(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| tag._type == "language")
+            .filter(|tag| matches!(tag._type, TagType::Language))
             .collect::<Vec<&Tag>>()
     }
 
     pub fn get_characters(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| tag._type == "character")
+            .filter(|tag| matches!(tag._type, TagType::Character))
             .collect::<Vec<&Tag>>()
     }
 
     pub fn get_groups(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| tag._type == "group")
+            .filter(|tag| matches!(tag._type, TagType::Group))
             .collect::<Vec<&Tag>>()
     }
 
     pub fn get_tags(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| tag._type == "tag")
+            .filter(|tag| matches!(tag._type, TagType::Tag))
             .collect::<Vec<&Tag>>()
     }
 
     pub fn get_category(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| tag._type == "category")
+            .filter(|tag| matches!(tag._type, TagType::Category))
             .collect::<Vec<&Tag>>()
     }
 
@@ -236,8 +236,48 @@ pub struct ImageFormat {
 pub struct Tag {
     pub id: u32,
     #[serde(rename = "type")]
-    pub _type: String,
+    pub _type: TagType,
     pub name: String,
     pub url: String,
     pub count: u32,
+}
+
+#[derive(serde::Deserialize, Debug)]
+#[serde(from = "String")]
+pub enum TagType {
+    Tag,
+    Artist,
+    Character,
+    Parodie,
+    Group,
+    Language,
+    Category
+}
+
+use std::convert::From;
+
+impl From<String> for TagType {
+    fn from(s: String) -> Self {
+        match s.as_ref() {
+            "artist" => Self::Artist,
+            "character" => Self::Character,
+            "parodie" => Self::Parodie,
+            "group" => Self::Group,
+            "category" => Self::Category,
+            _ => Self::Tag,
+        }
+    }
+}
+
+impl From<&str> for TagType {
+    fn from(s: &str) -> Self {
+        match s {
+            "artist" => Self::Artist,
+            "character" => Self::Character,
+            "parodie" => Self::Parodie,
+            "group" => Self::Group,
+            "category" => Self::Category,
+            _ => Self::Tag,
+        }
+    }
 }
