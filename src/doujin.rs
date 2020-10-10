@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use crate::search::SearchEntry;
 
-const fn none() -> Option<Vec<SearchEntry>> {
-    None
+const fn empty_vec() -> Vec<SearchEntry> {
+    Vec::new()
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -16,8 +16,8 @@ pub struct Doujin {
     pub num_pages: u16,
     pub images: Images,
     pub num_favorites: u32,
-    #[serde(default = "none")]
-    pub similars: Option<Vec<SearchEntry>>,
+    #[serde(default = "empty_vec")]
+    pub similars: Vec<SearchEntry>,
 }
 
 impl Doujin {
