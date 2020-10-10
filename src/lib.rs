@@ -19,12 +19,12 @@ mod tests {
     fn it_works() {
         let time_start = SystemTime::now();
 
-        let mut search_pop = Search::search_populars(Sort::Popular).unwrap();
+        /*let mut search_pop = Search::search_populars(Sort::Popular).unwrap();
         search_pop.merge_search_pages(0);
         println!("All results:");
         for result in &search_pop.entries {
             println!("[{}] {}",result.id,result.name) // On affiche toutes les entrées trouvées
-        }
+        }*/
 
         /*let table1 = LanguageTable::new().unwrap();
         let table2 = LanguageTable::new_by_popularity().unwrap();
@@ -33,11 +33,18 @@ mod tests {
         println!("==== ARTIST_TABLE 1 ====\n{:#?}", table1.get(2));
         println!("==== ARTIST_TABLE 2 ====\n{:?}", table2.max());*/
 
-        /*let table = TagTable::new().unwrap();
-        let table = ArtistTable::new().unwrap();
+        /*let table = ArtistTable::new().unwrap();
         let table = CharacterTable::new().unwrap();
         let table = ParodieTable::new().unwrap();
-        let table = GroupTable::new().unwrap();
+        let table = GroupTable::new().unwrap();*/
+
+        /*let table = ArtistTable::new().unwrap();
+        println!("Len = {:?}", table.len());
+        let table = CategoryTable::new().unwrap();
+        println!("Get = {:?}", table.get(table.len() - 1).unwrap());*/
+
+        /*let table = TagTable::new().unwrap();
+        println!("Tag: {:?}", table.get(50).unwrap()._type);
         println!("{:?}", &table.get_by_id(14520));
         println!("{:?}", &table.get_by_name("ahegao"));
         println!("{:?}", &table.max());
