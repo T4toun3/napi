@@ -228,10 +228,18 @@ fn fn_impl_table_content(data: &Data) -> TokenStream {
                         }
 
                         fn sort_by_popularity(&mut self) {
-                            self.#name.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
+                            self.#name.sort_by(|a, b| a.count.cmp(&b.count).reverse());
                         }
                     
                         fn sort_by_alphabetical(&mut self) {
+                            self.#name.sort_by_key(|x| x.name.to_owned())
+                        }
+
+                        fn sort_by_popularity_unstable(&mut self) {
+                            self.#name.sort_unstable_by(|a, b| a.count.cmp(&b.count).reverse());
+                        }
+                    
+                        fn sort_by_alphabetical_unstable(&mut self) {
                             self.#name.sort_unstable_by_key(|x| x.name.to_owned())
                         }
                     }
