@@ -3,7 +3,7 @@ use derive_macro::{NewTable, Table};
 
 use crate::string_utils::*;
 
-use crate::doujin::{Tag, TagType};
+use crate::tag::*;
 
 pub trait Table {
     fn get(&self, index: usize) -> Option<&Tag>;
@@ -15,8 +15,9 @@ pub trait Table {
     fn len(&self) -> usize;
     fn sort_by_popularity(&mut self);
     fn sort_by_alphabetical(&mut self);
+    fn sort_by_popularity_unstable(&mut self);
+    fn sort_by_alphabetical_unstable(&mut self);
 }
-
 
 // TagTable
 #[derive(Debug, NewTable, Table)]
