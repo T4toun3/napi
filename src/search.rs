@@ -33,6 +33,7 @@ impl Search {
 
         Some(Self {
             pages,
+            current_page,
             current_args,
             entries: text
                 .split(r#"<div class="gallery" data-tags=""#)
@@ -55,25 +56,17 @@ impl Search {
     }
 
     pub fn search_populars(sort: Sort) -> Option<Self> {
-    pub fn get_current_page(&self) -> u16 {
-        if let Some(SearchArgs::Page(e)) = self
-            .current_args
-            .iter()
-            .find(|x| matches!(x, SearchArgs::Page(x) if x != &0))
-        {
-            *e
-        } else {
-            1
-        }
         Self::new(vec![
+            SearchArgs::Sort(sort),
+            SearchArgs::Text(r#""""#.to_owned(), true),
+        ])
     }
 
     pub fn merge_search_all_pages(&mut self) {
-        let o = self.get_current_page();
         let pages: Vec<SearchEntry> = (1..self.pages + 1)
             .into_iter()
             .flat_map(|x| {
-                if x == o {
+                if x == self.current_page {
                     None
                 } else if let Some(e) = self.search_page(x).map(|x| x.entries) {
                     Some(e)
@@ -91,7 +84,7 @@ impl Search {
         let pages: Vec<SearchEntry> = (range)
             .into_iter()
             .flat_map(|x| {
-                if x == o {
+                if x == self.current_page || x > self.pages {
                     None
                 } else if let Some(e) = self.search_page(x).map(|x| x.entries) {
                     Some(e)
