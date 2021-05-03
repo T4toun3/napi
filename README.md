@@ -1,4 +1,4 @@
-# napi
+# Happi
  An api for nhentai write in Rust
 
 # Autors
