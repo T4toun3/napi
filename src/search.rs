@@ -7,6 +7,7 @@ use std::ops::Range;
 #[derive(Debug, PartialEq)]
 pub struct Search {
     pub pages: u16,
+    pub current_page: u16,
     pub current_args: Vec<SearchArgs>,
     pub entries: Vec<SearchEntry>,
 }
@@ -19,6 +20,7 @@ impl Search {
 
         let text = reqwest::blocking::get(url.as_str()).ok()?.text().ok()?;
 
+        let current_page = current_args[0].get_page().unwrap();
 
         let pages = text
             .after("<section class=\"pagination\">")
@@ -28,6 +30,7 @@ impl Search {
             .before("&")
             .before("\"")
             .to_type::<u16>()?;
+
         Some(Self {
             pages,
             current_args,
@@ -52,9 +55,6 @@ impl Search {
     }
 
     pub fn search_populars(sort: Sort) -> Option<Self> {
-        Self::new(&Self::build_url_with_args(vec![SearchArgs::Sort(sort), SearchArgs::Text(r#""""#.to_owned())]))
-    }
-
     pub fn get_current_page(&self) -> u16 {
         if let Some(SearchArgs::Page(e)) = self
             .current_args
@@ -65,6 +65,7 @@ impl Search {
         } else {
             1
         }
+        Self::new(vec![
     }
 
     pub fn merge_search_all_pages(&mut self) {
