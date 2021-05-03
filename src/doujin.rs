@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::fmt;
 
 use crate::search::SearchEntry;
+use crate::string_utils::StringUtils;
 
 const fn empty_vec() -> Vec<SearchEntry> {
     Vec::new()
@@ -55,7 +56,6 @@ pub struct Doujin {
 
 impl Doujin {
     pub fn new(id: u32) -> Option<Self> {
-        use crate::string_utils::StringUtils;
         reqwest::blocking::get(&format!("http://nhentai.net/g/{}/",id))
             .ok()?
             .text()
@@ -67,7 +67,6 @@ impl Doujin {
     }
 
     pub fn generate_similars(&mut self) -> Option<()> {
-        use crate::string_utils::StringUtils;
         let html = reqwest::blocking::get(&format!("http://nhentai.net/g/{}", self.id)).ok()?.text().ok()?;
         self.similars = html
             .after("<h2>More Like This</h2>")
