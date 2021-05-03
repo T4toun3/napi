@@ -1,3 +1,4 @@
+use crate::doujin::Doujin;
 use crate::string_utils::*;
 
 #[derive(Debug, PartialEq)]
@@ -107,10 +108,10 @@ impl Search {
 
     pub fn search_page(&self, page: u16) -> Option<Search> {
         if self.pages >= page {
-            let mut map = self.current_args.clone();
-            map.retain(|x| !matches!(x, SearchArgs::Page(_)));
-            map.push(SearchArgs::Page(page));
-            Search::new(&Self::build_url_with_args(map))
+            let mut args = self.current_args.clone();
+            args.retain(|x| !matches!(x, SearchArgs::Page(_)));
+            args.push(SearchArgs::Page(page));
+            Search::new(args)
         } else {
             None
         }
@@ -121,7 +122,7 @@ impl Search {
 pub struct SearchEntry {
     pub thumb: String,
     pub id: u32,
-    pub tags: Vec<u32>,
+    pub tags_by_id: Vec<u32>,
     pub name: String,
 }
 
@@ -129,7 +130,7 @@ impl SearchEntry {
     pub fn new(text: &str) -> Option<Self> {
         let text = text.before("</div>");
         Some(Self {
-            tags: text
+            tags_by_id: text
                 .before("\"")?
                 .split_whitespace()
                 .flat_map(|x| x.parse().ok())
@@ -140,7 +141,7 @@ impl SearchEntry {
         })
     }
 
-    pub fn fetch(&self) -> Option<crate::doujin::Doujin> {
-        crate::doujin::Doujin::new(self.id)
+    pub fn fetch(&self) -> Option<Doujin> {
+        Doujin::new(self.id)
     }
 }
