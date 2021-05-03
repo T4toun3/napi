@@ -44,7 +44,10 @@ impl Doujin {
         Some(())
     }
 
-    pub fn get_page_image_url_small(&self, page: u16) -> Option<String> {
+    pub fn get_image_url_small(&self, page: u16) -> Option<String> {
+        if page > self.num_pages {
+            return None;
+        }
         Some(format!(
             "https://t.nhentai.net/galleries/{}/{}t.{}",
             self.media_id,
@@ -53,7 +56,7 @@ impl Doujin {
         ))
     }
 
-    pub fn get_pages_image_urls_small(&self) -> Vec<String> {
+    pub fn get_images_urls_small(&self) -> Vec<String> {
         (1..self.num_pages + 1)
             .flat_map(|x| {
                 Some(format!(
@@ -66,7 +69,7 @@ impl Doujin {
             .collect()
     }
 
-    pub fn get_page_image_url(&self, page: u16) -> Option<String> {
+    pub fn get_image_url(&self, page: u16) -> Option<String> {
         Some(format!(
             "https://i.nhentai.net/galleries/{}/{}.{}",
             self.media_id,
@@ -75,7 +78,7 @@ impl Doujin {
         ))
     }
 
-    pub fn get_pages_image_urls(&self) -> Vec<String> {
+    pub fn get_images_urls(&self) -> Vec<String> {
         (1..self.num_pages + 1)
             .flat_map(|x| {
                 Some(format!(
@@ -166,7 +169,6 @@ impl Doujin {
         )
         .unwrap()
     }
-
 }
 
 use std::str::FromStr;
