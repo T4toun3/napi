@@ -2,6 +2,8 @@ use crate::doujin::Doujin;
 use crate::search_args::*;
 use crate::string_utils::*;
 
+use std::ops::Range;
+
 #[derive(Debug, PartialEq)]
 pub struct Search {
     pub pages: u16,
@@ -86,10 +88,8 @@ impl Search {
         self.entries.extend(pages);
     }
 
-    pub fn merge_search_pages(&mut self, limit: u16) {
-        use std::cmp;
-        let o = self.get_current_page();
-        let pages: Vec<SearchEntry> = (1..cmp::min(limit, self.pages) + 1)
+    pub fn merge_search_pages(&mut self, range: Range<u16>) {
+        let pages: Vec<SearchEntry> = (range)
             .into_iter()
             .flat_map(|x| {
                 if x == o {
