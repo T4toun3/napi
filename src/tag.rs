@@ -11,6 +11,18 @@ pub struct Tag {
     pub count: u32,
 }
 
+impl Default for Tag {
+    fn default() -> Self {
+        Self {
+            id: 0,
+            _type: TagType::Tag,
+            name: "".to_owned(),
+            url: "".to_owned(),
+            count: 1,
+        }
+    }
+}
+
 #[derive(serde::Deserialize, Debug, PartialEq, Eq, Clone)]
 #[serde(from = "String")]
 pub enum TagType {
@@ -21,6 +33,20 @@ pub enum TagType {
     Group,
     Language,
     Category,
+}
+
+impl Display for TagType {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TagType::Tag => write!(f, "tag"),
+            TagType::Artist => write!(f, "artist"),
+            TagType::Character => write!(f, "character"),
+            TagType::Parodie => write!(f, "parodie"),
+            TagType::Group => write!(f, "group"),
+            TagType::Language => write!(f, "language"),
+            TagType::Category => write!(f, "category"),
+        }
+    }
 }
 
 impl From<String> for TagType {
