@@ -6,6 +6,7 @@ use std::fmt;
 
 use crate::search::SearchEntry;
 use crate::string_utils::StringUtils;
+use crate::tag::*;
 
 const fn empty_vec() -> Vec<SearchEntry> {
     Vec::new()
@@ -56,24 +57,25 @@ pub struct Doujin {
 
 impl Doujin {
     pub fn new(id: u32) -> Option<Self> {
-        reqwest::blocking::get(&format!("http://nhentai.net/g/{}/",id))
+        let html = reqwest::blocking::get(&format!("http://nhentai.net/g/{}", id))
             .ok()?
             .text()
-            .ok()
+            .ok()?;
+
+        let mut doujin: Doujin = html
             .after("JSON.parse(\"")
             .before("\");")
-            .map(|x| serde_json::from_str(&x.replace("\\u0022","\"").replace("\\u002F","/")).ok())
-            .flatten()
-    }
+            .map(|x| serde_json::from_str(&x.replace("\\u0022", "\"").replace("\\u002F", "/")).ok())
+            .flatten()?;
 
-    pub fn generate_similars(&mut self) -> Option<()> {
-        let html = reqwest::blocking::get(&format!("http://nhentai.net/g/{}", self.id)).ok()?.text().ok()?;
-        self.similars = html
+        doujin.similars = html
             .after("<h2>More Like This</h2>")
             .before("</div></div>")?
             .split(r#"<div class="gallery" data-tags=""#)
-            .flat_map(|x| SearchEntry::new(x)).collect::<Vec<SearchEntry>>();
-        Some(())
+            .flat_map(|x| SearchEntry::new(x))
+            .collect::<Vec<SearchEntry>>();
+
+        Some(doujin)
     }
 
     pub fn get_image_url_small(&self, page: u16) -> Option<String> {
