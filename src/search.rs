@@ -12,15 +12,13 @@ pub struct Search {
 }
 
 impl Search {
-    pub fn new(url: &str) -> Option<Search> {
-        let text = reqwest::blocking::get(url).ok()?.text().ok()?;
-        let mut current_args: Vec<SearchArgs> = if let Some(e) = url.after("?") {
-            e.split('&').flat_map(|x| x.parse().ok()).collect()
-        } else {
-            Vec::new()
-        };
+    pub fn new(args: Vec<SearchArgs>) -> Option<Search> {
+        let current_args = SearchArgs::correct(args);
 
-        current_args = SearchArgs::dedup(current_args);
+        let url = Self::build_url_with_args(current_args.clone());
+
+        let text = reqwest::blocking::get(url.as_str()).ok()?.text().ok()?;
+
 
         let pages = text
             .after("<section class=\"pagination\">")
