@@ -11,7 +11,7 @@
 - [ ] Search with url (`from_url`)
 
 ## Doujin
-- [ ] Cast `media_id` into `u32`
+- [x] Cast `media_id` into `u32`
 
 ## Table
 - [ ] Add new method to access to the entries of a table
