@@ -13,6 +13,9 @@
 ## Doujin
 - [ ] Cast `media_id` into `u32`
 
+## Table
+- [ ] Add new method to access to the entries of a table
+
 ## Rustianisation (en franglais)
 *Tout ce qui est écrit ici n'est que proposition et aucunement un plan pour le future de cette API*
 - [x] créer une `enum` pour les différents type de tag (tag, artist, parody...)

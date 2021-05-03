@@ -13,6 +13,7 @@ pub trait Table {
     fn max(&self) -> Option<&Tag>;
     fn min(&self) -> Option<&Tag>;
     fn len(&self) -> usize;
+    // fn entries(&self) -> &Vec<Tag>;
     fn sort_by_popularity(&mut self);
     fn sort_by_alphabetical(&mut self);
     fn sort_by_popularity_unstable(&mut self);
