@@ -20,44 +20,39 @@ pub trait Table {
 }
 
 // TagTable
-#[derive(Debug, NewTable, Table)]
+#[derive(Debug, NewTable, Table, PartialEq, Eq)]
 pub struct TagTable {
     pub tags: Vec<Tag>,
 }
 
-
 // ArtistTable
-#[derive(Debug, NewTable, Table)]
+#[derive(Debug, NewTable, Table, PartialEq, Eq)]
 pub struct ArtistTable {
-    pub artists: Vec<Tag>
+    pub artists: Vec<Tag>,
 }
 
-
 // CharacterTable
-#[derive(Debug, NewTable, Table)]
+#[derive(Debug, NewTable, Table, PartialEq, Eq)]
 pub struct CharacterTable {
     pub characters: Vec<Tag>,
 }
 
-
 // ParodieTable
-#[derive(Debug, NewTable, Table)]
+#[derive(Debug, NewTable, Table, PartialEq, Eq)]
 pub struct ParodieTable {
     pub parodies: Vec<Tag>,
 }
 
-
 // ParodieTable
-#[derive(Debug, NewTable, Table)]
+#[derive(Debug, NewTable, Table, PartialEq, Eq)]
 pub struct GroupTable {
     pub groups: Vec<Tag>,
 }
 
-
 // LanguageTable
-#[derive(Debug, Table)]
+#[derive(Debug, Table, PartialEq, Eq)]
 pub struct LanguageTable {
-    pub languages: Vec<Tag>
+    pub languages: Vec<Tag>,
 }
 
 impl LanguageTable {
@@ -151,14 +146,12 @@ impl LanguageTable {
             }
         )
     }
-
 }
 
-
 // LanguageTable
-#[derive(Debug, Table)]
+#[derive(Debug, Table, PartialEq, Eq)]
 pub struct CategoryTable {
-    pub categories: Vec<Tag>
+    pub categories: Vec<Tag>,
 }
 
 impl CategoryTable {
