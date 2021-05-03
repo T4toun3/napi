@@ -1,4 +1,5 @@
 use crate::doujin::Doujin;
+use crate::search_args::*;
 use crate::string_utils::*;
 
 #[derive(Debug, PartialEq)]
@@ -38,12 +39,11 @@ impl Search {
         })
     }
 
-    pub fn build_url_with_args(mut to_add: Vec<SearchArgs>) -> String {
-        to_add = SearchArgs::dedup(to_add);
+    pub fn build_url_with_args(args: Vec<SearchArgs>) -> String {
+        let args = SearchArgs::correct(args);
         format!(
             "https://nhentai.net/search/?{}",
-            to_add
-                .iter()
+            args.iter()
                 .filter(|x| !matches!(x, SearchArgs::Sort(Sort::Recent)))
                 .map(|x| x.to_string())
                 .collect::<Vec<String>>()
