@@ -1,5 +1,5 @@
 [package]
-name = "napi"
+name = "happi"
 version = "0.1.0"
 authors = ["T4toun3 <oettam32@gmail.com>"]
 edition = "2018"
