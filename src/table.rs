@@ -73,26 +73,33 @@ impl LanguageTable {
 
         let json: Json = serde_json::from_str(&string).ok()?;
 
-        let vec_html = json.language.iter().flat_map(|l| {
-            Some(reqwest::blocking::get(&format!("https://nhentai.net/language/{}/", l)).ok()?.text().ok()?)
-        }).collect::<Vec<String>>();
+        let vec_html = json
+            .language
+            .iter()
+            .flat_map(|l| {
+                Some(
+                    reqwest::blocking::get(&format!("https://nhentai.net/language/{}/", l))
+                        .ok()?
+                        .text()
+                        .ok()?,
+                )
+            })
+            .collect::<Vec<String>>();
 
-        Some(
-            Self {
-                languages: vec_html
-                    .par_iter()
-                    .enumerate()
-                    .flat_map(|(i, x)| {
-                        if let Some(t) = Self::search_tag(x) {
-                            Some(t)
-                        } else {
-                            println!("Error while searshing language {}", i + 1);
-                            None
-                        }
-                    })
-                    .collect::<Vec<Tag>>()
-            }
-        )
+        Some(Self {
+            languages: vec_html
+                .par_iter()
+                .enumerate()
+                .flat_map(|(i, x)| {
+                    if let Some(t) = Self::search_tag(x) {
+                        Some(t)
+                    } else {
+                        println!("Error while searshing language {}", i + 1);
+                        None
+                    }
+                })
+                .collect::<Vec<Tag>>(),
+        })
     }
 
     pub fn new_by_popularity() -> Option<Self> {
@@ -112,39 +119,56 @@ impl LanguageTable {
 
         let json: Json = serde_json::from_str(&string).ok()?;
 
-        let vec_html = json.language.iter().flat_map(|l| {
-            Some(reqwest::blocking::get(&format!("https://nhentai.net/language/{}/", l)).ok()?.text().ok()?)
-        }).collect::<Vec<String>>();
+        let vec_html = json
+            .language
+            .iter()
+            .flat_map(|l| {
+                Some(
+                    reqwest::blocking::get(&format!("https://nhentai.net/language/{}/", l))
+                        .ok()?
+                        .text()
+                        .ok()?,
+                )
+            })
+            .collect::<Vec<String>>();
 
         let mut table = Self {
-                languages: vec_html
-                    .par_iter()
-                    .enumerate()
-                    .flat_map(|(i, x)| {
-                        if let Some(t) = Self::search_tag(x) {
-                            Some(t)
-                        } else {
-                            println!("Error while searshing language {}", i + 1);
-                            None
-                        }
-                    })
-                    .collect::<Vec<Tag>>()
-            };
+            languages: vec_html
+                .par_iter()
+                .enumerate()
+                .flat_map(|(i, x)| {
+                    if let Some(t) = Self::search_tag(x) {
+                        Some(t)
+                    } else {
+                        println!("Error while searshing language {}", i + 1);
+                        None
+                    }
+                })
+                .collect::<Vec<Tag>>(),
+        };
         table.sort_by_popularity();
         Some(table)
     }
 
     fn search_tag(html: &str) -> Option<Tag> {
-        let html = html.between("<h1>", "</h1>").between(r#"<a href=""#, "</span></a>")?.to_owned();
-        Some(
-            Tag {
-                id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
-                _type: TagType::Language,
-                name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
-                url: html.before(r#"" class="tag"#)?.to_owned(),
-                count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
-            }
-        )
+        let html = html
+            .between("<h1>", "</h1>")
+            .between(r#"<a href=""#, "</span></a>")?
+            .to_owned();
+        Some(Tag {
+            id: html
+                .between("tag tag-", r#" "><span"#)?
+                .parse::<u32>()
+                .ok()?,
+            _type: TagType::Language,
+            name: html.between("/language/", r#"/" class="tag"#)?.to_owned(),
+            url: html.before(r#"" class="tag"#)?.to_owned(),
+            count: html
+                .after(r#"="count">"#)?
+                .replace("K", "000")
+                .parse::<u32>()
+                .ok()?,
+        })
     }
 }
 
@@ -172,26 +196,33 @@ impl CategoryTable {
 
         let json: Json = serde_json::from_str(&string).ok()?;
 
-        let vec_html = json.category.iter().flat_map(|l| {
-            Some(reqwest::blocking::get(&format!("https://nhentai.net/category/{}/", l)).ok()?.text().ok()?)
-        }).collect::<Vec<String>>();
+        let vec_html = json
+            .category
+            .iter()
+            .flat_map(|l| {
+                Some(
+                    reqwest::blocking::get(&format!("https://nhentai.net/category/{}/", l))
+                        .ok()?
+                        .text()
+                        .ok()?,
+                )
+            })
+            .collect::<Vec<String>>();
 
-        Some(
-            Self {
-                categories: vec_html
-                    .par_iter()
-                    .enumerate()
-                    .flat_map(|(i, x)| {
-                        if let Some(t) = Self::search_tag(x) {
-                            Some(t)
-                        } else {
-                            println!("Error while searshing category {}", i + 1);
-                            None
-                        }
-                    })
-                    .collect::<Vec<Tag>>()
-            }
-        )
+        Some(Self {
+            categories: vec_html
+                .par_iter()
+                .enumerate()
+                .flat_map(|(i, x)| {
+                    if let Some(t) = Self::search_tag(x) {
+                        Some(t)
+                    } else {
+                        println!("Error while searshing category {}", i + 1);
+                        None
+                    }
+                })
+                .collect::<Vec<Tag>>(),
+        })
     }
 
     pub fn new_by_popularity() -> Option<Self> {
@@ -211,39 +242,55 @@ impl CategoryTable {
 
         let json: Json = serde_json::from_str(&string).ok()?;
 
-        let vec_html = json.category.iter().flat_map(|l| {
-            Some(reqwest::blocking::get(&format!("https://nhentai.net/category/{}/", l)).ok()?.text().ok()?)
-        }).collect::<Vec<String>>();
+        let vec_html = json
+            .category
+            .iter()
+            .flat_map(|l| {
+                Some(
+                    reqwest::blocking::get(&format!("https://nhentai.net/category/{}/", l))
+                        .ok()?
+                        .text()
+                        .ok()?,
+                )
+            })
+            .collect::<Vec<String>>();
 
         let mut table = Self {
-                categories: vec_html
-                    .par_iter()
-                    .enumerate()
-                    .flat_map(|(i, x)| {
-                        if let Some(t) = Self::search_tag(x) {
-                            Some(t)
-                        } else {
-                            println!("Error while searshing category {}", i + 1);
-                            None
-                        }
-                    })
-                    .collect::<Vec<Tag>>()
-            };
+            categories: vec_html
+                .par_iter()
+                .enumerate()
+                .flat_map(|(i, x)| {
+                    if let Some(t) = Self::search_tag(x) {
+                        Some(t)
+                    } else {
+                        println!("Error while searshing category {}", i + 1);
+                        None
+                    }
+                })
+                .collect::<Vec<Tag>>(),
+        };
         table.sort_by_popularity();
         Some(table)
     }
 
     fn search_tag(html: &str) -> Option<Tag> {
-        let html = html.between("<h1>", "</h1>").between(r#"<a href=""#, "</span></a>")?.to_owned();
-        Some(
-            Tag {
-                id: html.between("tag tag-", r#" "><span"#)?.parse::<u32>().ok()?,
-                _type: TagType::Category,
-                name: html.between("/category/", r#"/" class="tag"#)?.to_owned(),
-                url: html.before(r#"" class="tag"#)?.to_owned(),
-                count: html.after(r#"="count">"#)?.replace("K", "000").parse::<u32>().ok()?
-            }
-        )
+        let html = html
+            .between("<h1>", "</h1>")
+            .between(r#"<a href=""#, "</span></a>")?
+            .to_owned();
+        Some(Tag {
+            id: html
+                .between("tag tag-", r#" "><span"#)?
+                .parse::<u32>()
+                .ok()?,
+            _type: TagType::Category,
+            name: html.between("/category/", r#"/" class="tag"#)?.to_owned(),
+            url: html.before(r#"" class="tag"#)?.to_owned(),
+            count: html
+                .after(r#"="count">"#)?
+                .replace("K", "000")
+                .parse::<u32>()
+                .ok()?,
+        })
     }
-
 }
