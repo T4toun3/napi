@@ -19,6 +19,7 @@
 ## Rustianisation (en franglais)
 *Tout ce qui est écrit ici n'est que proposition et aucunement un plan pour le future de cette API*
 - [x] créer une `enum` pour les différents type de tag (tag, artist, parody...)
+- [ ] ASYNC
 
 # GITHUB
 - [ ] Add how to use napi in the README file
