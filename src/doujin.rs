@@ -151,17 +151,10 @@ impl Doujin {
             .collect()
     }
 
-    pub fn get_artists(&self) -> Vec<&Tag> {
+    pub fn get_parodies(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| matches!(tag._type, TagType::Artist))
-            .collect::<Vec<&Tag>>()
-    }
-
-    pub fn get_languages(&self) -> Vec<&Tag> {
-        self.tags
-            .iter()
-            .filter(|tag| matches!(tag._type, TagType::Language))
+            .filter(|tag| matches!(tag._type, TagType::Parody))
             .collect::<Vec<&Tag>>()
     }
 
@@ -172,6 +165,13 @@ impl Doujin {
             .collect::<Vec<&Tag>>()
     }
 
+    pub fn get_tags(&self) -> Vec<&Tag> {
+        self.tags
+            .iter()
+            .filter(|tag| matches!(tag._type, TagType::Tag))
+            .collect::<Vec<&Tag>>()
+    }
+
     pub fn get_groups(&self) -> Vec<&Tag> {
         self.tags
             .iter()
@@ -179,10 +179,13 @@ impl Doujin {
             .collect::<Vec<&Tag>>()
     }
 
-    pub fn get_tags(&self) -> Vec<&Tag> {
+    pub fn get_languages(&self) -> Vec<&Tag> {
         self.tags
             .iter()
-            .filter(|tag| matches!(tag._type, TagType::Tag))
+            .filter(|tag| matches!(tag._type, TagType::Language))
+            .collect::<Vec<&Tag>>()
+    }
+
             .collect::<Vec<&Tag>>()
     }
 
