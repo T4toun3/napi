@@ -1,3 +1,6 @@
+
+use serde::Deserialize;
+
 use std::convert::From;
 use std::fmt::{Display, Formatter};
 
@@ -23,7 +26,7 @@ impl Default for Tag {
     }
 }
 
-#[derive(serde::Deserialize, Debug, PartialEq, Eq, Clone)]
+#[derive(Deserialize, Debug, PartialEq, Eq, Clone)]
 #[serde(from = "String")]
 pub enum TagType {
     Parody,
