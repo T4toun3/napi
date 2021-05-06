@@ -1,3 +1,4 @@
+use chrono::naive::NaiveDateTime;
 
 use std::collections::HashMap;
 
@@ -13,7 +14,8 @@ pub struct Doujin {
     #[serde(deserialize_with = "string_to_u32")]
     pub media_id: u32,
     pub title: HashMap<String, String>, // Lang - Title
-    pub upload_date: u64,
+    #[serde(deserialize_with = "unix_to_date")]
+    pub upload_date: NaiveDateTime,
     pub tags: Vec<Tag>,
     pub num_pages: u16,
     pub images: Images,

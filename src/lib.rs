@@ -10,6 +10,7 @@ pub mod serde_utils;
 #[cfg(test)]
 mod tests {
 
+    use chrono::NaiveDateTime;
 
     use std::time::SystemTime;
 

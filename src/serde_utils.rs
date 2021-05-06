@@ -1,6 +1,7 @@
 
 use serde::de::{Error, Unexpected, Visitor};
 use serde::Deserializer;
+use chrono::naive::NaiveDateTime;
 
 use std::fmt;
 
@@ -38,3 +39,28 @@ where
     deserializer.deserialize_string(visitor)
 }
 
+pub fn unix_to_date<'de, D>(deserializer: D) -> Result<NaiveDateTime, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct UnixToDate;
+
+    impl<'de> Visitor<'de> for UnixToDate {
+        type Value = NaiveDateTime;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("a unsigned interger")
+        }
+
+        fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+        where
+            E: Error,
+        {
+            Ok(NaiveDateTime::from_timestamp(v as i64, 0))
+        }
+
+    }
+
+    let visitor = UnixToDate;
+    deserializer.deserialize_u64(visitor)
+}
