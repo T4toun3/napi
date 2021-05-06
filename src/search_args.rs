@@ -8,14 +8,6 @@ pub enum SearchArgs {
     Tag(Tag, bool),
 }
 
-// Tag,
-// Artist,
-// Character,
-// Parodie,
-// Group,
-// Language,
-// Category
-
 use std::str::FromStr;
 
 impl FromStr for SearchArgs {
@@ -95,37 +87,6 @@ impl SearchArgs {
             SearchArgs::Tag(_, used) => *used,
             _ => true,
         }
-    }
-
-    pub fn parse(s: &str) -> Vec<Self> {
-        s.split('&')
-            .flat_map(|x| {
-                let mut i = x.split('=');
-
-                Some(match i.next()? {
-                    "page" => vec![Self::Page(i.next()?.parse::<u16>().ok()?)],
-                    "sort" => vec![Self::Sort(i.next()?.parse().ok()?)],
-                    "q" => {
-                        let content = i.next()?;
-
-                        // TODO: splite les ':'
-                        //       remplacer les 'true' temporaire
-
-                        // pub struct Tag {
-                        //     pub id: u32,
-                        //     #[serde(rename = "type")]
-                        //     pub _type: TagType,
-                        //     pub name: String,
-                        //     pub url: String,
-                        //     pub count: u32,
-                        // }
-                        vec![Self::Text(i.next()?.to_owned(), true)]
-                    }
-                    _ => return None,
-                })
-            })
-            .flatten()
-            .collect::<Vec<Self>>()
     }
 
     pub fn get_page(&self) -> Option<u16> {

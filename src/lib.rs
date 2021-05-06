@@ -12,8 +12,6 @@ mod tests {
 
     use chrono::NaiveDateTime;
 
-    use std::time::SystemTime;
-
     use crate::search::Search;
     use crate::search_args::{SearchArgs, Sort};
     use crate::table::*;
@@ -242,8 +240,7 @@ mod tests {
     
     #[test]
     fn random_doujin() {
-        let rand = Doujin::random();
-        println!("Ramdom doujin : {:?}", rand);
+        Doujin::random().unwrap();
     }
 
     #[test]
@@ -263,12 +260,6 @@ mod tests {
         let img_urls = doujin.get_images_urls();
         assert_eq!(img_urls.len(), 31);
         assert_eq!(img_urls[0], "https://i.nhentai.net/galleries/1183642/1.jpg");
-    }
-
-    #[test]
-    fn doujin_media_id() {
-        let doujin = Doujin::new(224001).unwrap();
-        assert_eq!(doujin.media_id, 1183642);
     }
 
     #[test]
@@ -327,40 +318,5 @@ mod tests {
         assert_eq!(doujin.title["japanese"], "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");
         assert_eq!(doujin.title["pretty"], "Galar no Yoru no Sugata | Galar\\u2019s Night view");
     }
-
-    #[test]
-    fn it_works() {
-        let time_start = SystemTime::now();
-
-
-
-        /*let args = vec![SearchArgs::Page(2), SearchArgs::Page(3), SearchArgs::Text("hello".to_string())];
-        let url = Search::build_url_with_args(args);
-        println!("url = {}", url);
-        let mut search = Search::new(&url).unwrap();
-        search.merge_search_all_pages(); // On récupère toutes les autres pages dans la recherche et les ajoute dans entries en plus de la page précédente
-        println!("All results:");
-        for result in &search.entries {
-            println!("[{}] {}",result.id,result.name) // On affiche toutes les entrées trouvées
-        }
-        println!("{}", search.entries[0].id);
-        let page = Doujin::new(search.entries[0].id).unwrap(); // On prend la première page de la recherche
-        println!("{:?}",page.get_pages_image_urls()); // On récupère l'url de toutes les images du manga
-        println!("{:?}",Search::new("https://nhentai.net/search/?q=test&page=1&sort=popular-week"));*/
-
-        let args = vec![SearchArgs::Page(2)];
-        let search = Search::new(args).unwrap();
-        for result in search.entries {
-            println!("[{}], {}", result.id, result.name)
-        }
-
-        
-
-        println!(
-            "\nTime to execute: {:?}\n",
-            SystemTime::now()
-                .duration_since(time_start)
-                .expect("Time went backwards")
-        );
     }
 }
