@@ -184,15 +184,14 @@ impl Doujin {
             .collect::<Vec<&Tag>>()
     }
 
-    pub fn random() -> Self {
+    pub fn random() -> Option<Self> {
         Self::from_str(
             reqwest::blocking::get("https://nhentai.net/random/")
-                .unwrap()
+                .ok()?
                 .text()
-                .unwrap()
+                .ok()?
                 .as_ref(),
-        )
-        .unwrap()
+        ).ok()
     }
 }
 
