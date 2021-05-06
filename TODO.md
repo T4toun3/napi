@@ -8,13 +8,13 @@
 - [x] Add way to set a maximun of page research
 - [ ] Add ability to set default value (*ex: Set `Sort` to `PopularWeek`. `correct([Page(2)]) -> [Page(2), Sort::PopularWeek]`*)
 - [ ] Add time args
-- [ ] Search with url (`from_url`)
+- [ ] Manage args
 
 ## Doujin
 - [x] Cast `media_id` into `u32`
 
 ## Table
-- [ ] Add new method to access to the entries of a table
+- [x] Add new method to access to the entries of a table
 
 ## Rustianisation (en franglais)
 *Tout ce qui est écrit ici n'est que proposition et aucunement un plan pour le future de cette API*
