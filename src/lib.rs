@@ -38,7 +38,7 @@ mod tests {
     }
 
     #[test]
-    fn table_trait_some() {
+    fn impl_table_trait() {
         let mut table = CategoryTable::new().unwrap();
         assert_eq!(table.len(), 7);
         assert_eq!(table.get(0).unwrap().name, "artistcg");
@@ -281,7 +281,7 @@ mod tests {
     }
 
     #[test]
-    fn doujin_get_all() {
+    fn doujin_get_method_all() {
         let doujin = Doujin::new(141506).unwrap();
 
         assert_eq!(doujin.get_parodies().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["kantai collection"]);
