@@ -125,7 +125,9 @@ impl SearchEntry {
             tags_by_id: text
                 .before("\"")?
                 .split_whitespace()
-                .flat_map(|x| x.parse().ok())
+                .flat_map(|x| {
+                    x.parse().ok()
+                })
                 .collect(),
             thumb: text.after(" data-src=\"").before("\"")?.to_owned(),
             id: text.after("<a href=\"/g/").before("/\"").to_type()?,

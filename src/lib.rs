@@ -251,7 +251,6 @@ mod tests {
         ];
         let search = Search::new(args).unwrap();
         search.entries[0].fetch().unwrap(); // On prend la première page de la recherche
-        // println!("{:?}",Search::new("https://nhentai.net/search/?q=test&page=1&sort=popular-week"));
     }
 
     #[test]
@@ -272,7 +271,6 @@ mod tests {
     fn doujin_image_and_page_url() {
         let doujin = Doujin::new(327341).unwrap();
 
-        // assert_eq!(doujin.upload_date.to_string(), "2020-09-02 13:29:34");
         assert_eq!(doujin.get_image_url_small(1).unwrap(), doujin.get_images_urls_small()[0], "https://t.nhentai.net/galleries/1723824/1t.jpg");
         assert_eq!(doujin.get_image_url(10).unwrap(), "https://i.nhentai.net/galleries/1723824/10.jpg");
         assert_eq!(doujin.get_images_urls()[3], "https://i.nhentai.net/galleries/1723824/4.jpg");
