@@ -60,6 +60,7 @@ impl From<String> for TagType {
             "artist" => Self::Artist,
             "group" => Self::Group,
             "category" => Self::Category,
+            "language" => Self::Language,
             _ => Self::Tag,
         }
     }
