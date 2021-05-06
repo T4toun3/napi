@@ -187,17 +187,47 @@ mod tests {
     }
 
     #[test]
-    fn search_and_merge() {
-        // TODO: test when the max value is greater than the number of page 
+    fn search_and_merge_all() {
         let args = vec![
             SearchArgs::Page(2),
             SearchArgs::Text("hello".to_string(), true),
         ];
         let mut search = Search::new(args).unwrap();
         search.merge_search_all_pages(); // On récupère toutes les autres pages dans la recherche et les ajoute dans entries en plus de la page précédente
-        assert!(search.entries.len() > 70);
+        assert!(search.entries.len() > 80);
     }
 
+    #[test]
+    fn search_and_merge_range() {
+        let args = vec![
+            SearchArgs::Page(2),
+            SearchArgs::Text("hello".to_string(), true),
+        ];
+        let mut search1 = Search::new(args).unwrap();
+        let mut search2 =  search1.clone();
+        
+        search1.merge_search_all_pages();
+        search2.merge_search_pages(1..10);
+        assert_eq!(search1.entries.len(), search2.entries.len());
+    }
+
+    #[test]
+    fn search_and_merge_range_limited() {
+        let args = vec![
+            SearchArgs::Page(2),
+            SearchArgs::Text("hello".to_string(), true),
+        ];
+
+        let mut search1 = Search::new(args).unwrap();
+        let mut search2 =  search1.clone();
+        let mut search3 =  search1.clone();
+        
+        search1.merge_search_all_pages();
+        search2.merge_search_pages(2..search2.pages + 1);
+        search3.merge_search_pages(1..3);
+        assert!(search1.entries.len() > search2.entries.len());
+        assert!(search1.entries.len() > search3.entries.len());
+    }
     #[test]
     fn shearch_popular() {
         let mut search_pop = Search::search_populars(Sort::PopularAllTime).unwrap();
@@ -248,14 +278,61 @@ mod tests {
     }
 
     #[test]
-    fn all_methods_doujin() {
-        let doujin = Doujin::new(334108).unwrap();
-        assert_eq!(doujin.get_image_url_small(3).unwrap(), "https://t.nhentai.net/galleries/1764861/3t.png");
-        // TODO: complite with all methods
+    fn doujin_image_and_page_url() {
+        let doujin = Doujin::new(327341).unwrap();
+
+        // assert_eq!(doujin.upload_date.to_string(), "2020-09-02 13:29:34");
+        assert_eq!(doujin.get_image_url_small(1).unwrap(), doujin.get_images_urls_small()[0], "https://t.nhentai.net/galleries/1723824/1t.jpg");
+        assert_eq!(doujin.get_image_url(10).unwrap(), "https://i.nhentai.net/galleries/1723824/10.jpg");
+        assert_eq!(doujin.get_images_urls()[3], "https://i.nhentai.net/galleries/1723824/4.jpg");
+        assert_eq!(doujin.get_image_cover(), "https://t.nhentai.net/galleries/1723824/cover.jpg");
+        assert_eq!(doujin.get_image_thumbnail(), "https://t.nhentai.net/galleries/1723824/thumb.jpg");
+        assert_eq!(doujin.get_page_url(5), "https://nhentai.net/g/327341/5/");
+        assert_eq!(doujin.get_pages_urls().len(), 126);
     }
+
+    #[test]
+    fn doujin_get_all() {
+        let doujin = Doujin::new(141506).unwrap();
+
+        assert_eq!(doujin.get_parodies().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["kantai collection"]);
+        assert_eq!(doujin.get_characters().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["akizuki", "teitoku"]);
+        assert_eq!(doujin.get_tags().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["schoolgirl uniform", "nakadashi", "x-ray", "blowjob", "sole female", "sole male"]);
+        assert_eq!(doujin.get_artists().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["nakano sora"]);
+        assert_eq!(doujin.get_groups().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["in the sky"]);
+        assert_eq!(doujin.get_languages().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["translated", "chinese"]);
+        assert_eq!(doujin.get_category().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["doujinshi"]);
+    }
+
+    #[test]
+    fn doujin_all_fields() {
+        let doujin = Doujin::new(141506).unwrap();
+
+        assert_eq!(doujin.id, 141506);
+        assert_eq!(doujin.media_id, 844469);
+        assert_eq!(doujin.title["english"], "(C88) [In The Sky (Nakano Sora)] Shuuya ni Omou (Kantai Collection -KanColle-) [Chinese] [\\u5c4f\\u5e55\\u9ad2\\u4e86\\u6f22\\u5316\\u7d44]");
+        assert_eq!(doujin.upload_date, NaiveDateTime::parse_from_str("2015-08-21 13:13:16", "%Y-%m-%d %H:%M:%S").unwrap());
+        assert_eq!(doujin.tags.len(), 14);
+        assert_eq!(doujin.num_pages, 24);
+        assert_eq!(doujin.images.pages.len(), 24);
+        assert!(doujin.num_favorites > 400);
+        assert_eq!(doujin.similars.len(), 5);
+    }
+
+    #[test]
+    fn doujin_title() {
+        let doujin = Doujin::new(304826).unwrap();
+
+        assert_eq!(doujin.title["english"], "(C97) [DOLL PLAY (Kurosu Gatari)] Galar no Yoru no Sugata | Galar\\u2019s Night view (Pok\\u00e9mon Sword and Shield) [English] [Coffedrug]");
+        assert_eq!(doujin.title["japanese"], "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");
+        assert_eq!(doujin.title["pretty"], "Galar no Yoru no Sugata | Galar\\u2019s Night view");
+    }
+
     #[test]
     fn it_works() {
         let time_start = SystemTime::now();
+
+
 
         /*let args = vec![SearchArgs::Page(2), SearchArgs::Page(3), SearchArgs::Text("hello".to_string())];
         let url = Search::build_url_with_args(args);
@@ -277,16 +354,7 @@ mod tests {
             println!("[{}], {}", result.id, result.name)
         }
 
-        /*let doujin = Doujin::new(327341).unwrap();
-        println!("{:?}", doujin);
-        println!("get_page_image_url_small : {}", doujin.get_page_image_url_small(1).unwrap());
-        //println!("get_pages_image_urls_small : {:?}", doujin.get_pages_image_urls_small());
-        println!("get_page_image_url : {}", doujin.get_page_image_url(1).unwrap());
-        //println!("get_pages_image_urls : {:?}", doujin.get_pages_image_urls());
-        println!("get_image_cover : {}", doujin.get_image_cover());
-        println!("get_image_thumbnail : {}", doujin.get_image_thumbnail());
-        println!("get_page_url : {}", doujin.get_page_url(1));
-        //println!("get_pages_urls : {:?}", doujin.get_pages_urls());*/
+        
 
         println!(
             "\nTime to execute: {:?}\n",
