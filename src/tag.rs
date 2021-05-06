@@ -55,8 +55,8 @@ impl Display for TagType {
 impl From<String> for TagType {
     fn from(s: String) -> Self {
         match s.as_ref() {
+            "parody" => Self::Parody,
             "character" => Self::Character,
-            "parodie" => Self::Parodie,
             "artist" => Self::Artist,
             "group" => Self::Group,
             "category" => Self::Category,
@@ -70,7 +70,7 @@ impl From<&str> for TagType {
         match s {
             "artist" => Self::Artist,
             "character" => Self::Character,
-            "parodie" => Self::Parodie,
+            "parody" => Self::Parody,
             "group" => Self::Group,
             "category" => Self::Category,
             _ => Self::Tag,
