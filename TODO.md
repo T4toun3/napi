@@ -1,4 +1,4 @@
-# NAPI
+# Happi
 
 ## Macro
 - [x] Add a macro to `impl Table` by using a procedural macro
