@@ -5,7 +5,6 @@ use serde::Deserialize;
 use crate::search::SearchEntry;
 use crate::string_utils::StringUtils;
 use crate::tag::*;
-
 use crate::serde_utils::*;
 
 #[derive(Deserialize, Debug)]
@@ -13,8 +12,7 @@ pub struct Doujin {
     pub id: u32,
     #[serde(deserialize_with = "string_to_u32")]
     pub media_id: u32,
-    // TODO: change this because it's all the time "english" + "japaness" + "pretty" (struct)
-    pub title: HashMap<String, String>, // Lang - Title
+    pub title: Title,
     #[serde(deserialize_with = "unix_to_date")]
     pub upload_date: NaiveDateTime,
     pub tags: Vec<Tag>,
@@ -261,6 +259,14 @@ pub struct ImageFormat {
     pub t: String,
     pub w: u16,
     pub h: u16,
+}
+
+
+#[derive(Debug, Deserialize)]
+pub struct Title {
+    pub english: String,
+    pub japanese: String,
+    pub pretty:  String,
 }
 
 // #[test]

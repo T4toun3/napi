@@ -301,7 +301,7 @@ mod tests {
 
         assert_eq!(doujin.id, 141506);
         assert_eq!(doujin.media_id, 844469);
-        assert_eq!(doujin.title["english"], "(C88) [In The Sky (Nakano Sora)] Shuuya ni Omou (Kantai Collection -KanColle-) [Chinese] [\\u5c4f\\u5e55\\u9ad2\\u4e86\\u6f22\\u5316\\u7d44]");
+        assert_eq!(doujin.title.english, "(C88) [In The Sky (Nakano Sora)] Shuuya ni Omou (Kantai Collection -KanColle-) [Chinese] [\\u5c4f\\u5e55\\u9ad2\\u4e86\\u6f22\\u5316\\u7d44]");
         assert_eq!(doujin.upload_date, NaiveDateTime::parse_from_str("2015-08-21 13:13:16", "%Y-%m-%d %H:%M:%S").unwrap());
         assert_eq!(doujin.tags.len(), 14);
         assert_eq!(doujin.num_pages, 24);
@@ -314,9 +314,8 @@ mod tests {
     fn doujin_title() {
         let doujin = Doujin::new(304826).unwrap();
 
-        assert_eq!(doujin.title["english"], "(C97) [DOLL PLAY (Kurosu Gatari)] Galar no Yoru no Sugata | Galar\\u2019s Night view (Pok\\u00e9mon Sword and Shield) [English] [Coffedrug]");
-        assert_eq!(doujin.title["japanese"], "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");
-        assert_eq!(doujin.title["pretty"], "Galar no Yoru no Sugata | Galar\\u2019s Night view");
-    }
+        assert_eq!(doujin.title.english, "(C97) [DOLL PLAY (Kurosu Gatari)] Galar no Yoru no Sugata | Galar\\u2019s Night view (Pok\\u00e9mon Sword and Shield) [English] [Coffedrug]");
+        assert_eq!(doujin.title.japanese, "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");
+        assert_eq!(doujin.title.pretty, "Galar no Yoru no Sugata | Galar\\u2019s Night view");
     }
 }
