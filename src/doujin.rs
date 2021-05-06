@@ -1,6 +1,6 @@
-use chrono::naive::NaiveDateTime;
 
-use std::collections::HashMap;
+use chrono::naive::NaiveDateTime;
+use serde::Deserialize;
 
 use crate::search::SearchEntry;
 use crate::string_utils::StringUtils;
@@ -8,7 +8,7 @@ use crate::tag::*;
 
 use crate::serde_utils::*;
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct Doujin {
     pub id: u32,
     #[serde(deserialize_with = "string_to_u32")]
@@ -256,7 +256,7 @@ impl Images {
     }
 }
 
-#[derive(serde::Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct ImageFormat {
     pub t: String,
     pub w: u16,
