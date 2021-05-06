@@ -155,6 +155,10 @@ impl Doujin {
             .collect::<Vec<&Tag>>()
     }
 
+    pub fn get_artists(&self) -> Vec<&Tag> {
+        self.tags
+            .iter()
+            .filter(|tag| matches!(tag._type, TagType::Artist))
             .collect::<Vec<&Tag>>()
     }
 
