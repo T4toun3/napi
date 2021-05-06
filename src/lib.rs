@@ -1,7 +1,7 @@
 
 mod string_utils;
 pub mod search;
-pub mod doujin;
+pub mod gallery;
 pub mod table;
 pub mod tag;
 pub mod search_args;
@@ -16,7 +16,7 @@ mod tests {
     use crate::search_args::{SearchArgs, Sort};
     use crate::table::*;
     use crate::{
-        doujin::Doujin,
+        gallery::Gallery,
         tag::{Tag, TagType},
     };
 
@@ -241,7 +241,7 @@ mod tests {
     
     #[test]
     fn random_doujin() {
-        Doujin::random().unwrap();
+        Gallery::random().unwrap();
     }
 
     #[test]
@@ -256,7 +256,7 @@ mod tests {
 
     #[test]
     fn new_doujin() {
-        let doujin = Doujin::new(224001).unwrap();
+        let doujin = Gallery::new(224001).unwrap();
         let img_urls = doujin.get_images_urls();
         assert_eq!(img_urls.len(), 31);
         assert_eq!(img_urls[0], "https://i.nhentai.net/galleries/1183642/1.jpg");
@@ -264,13 +264,13 @@ mod tests {
 
     #[test]
     fn similar() {
-        let doujin = Doujin::new(316932).unwrap();
+        let doujin = Gallery::new(316932).unwrap();
         assert_eq!(doujin.similars.len(), 5);
     }
 
     #[test]
     fn doujin_image_and_page_url() {
-        let doujin = Doujin::new(327341).unwrap();
+        let doujin = Gallery::new(327341).unwrap();
 
         assert_eq!(doujin.get_image_url_small(1).unwrap(), doujin.get_images_urls_small()[0], "https://t.nhentai.net/galleries/1723824/1t.jpg");
         assert_eq!(doujin.get_image_url(10).unwrap(), "https://i.nhentai.net/galleries/1723824/10.jpg");
@@ -283,7 +283,7 @@ mod tests {
 
     #[test]
     fn doujin_get_method_all() {
-        let doujin = Doujin::new(141506).unwrap();
+        let doujin = Gallery::new(141506).unwrap();
 
         assert_eq!(doujin.get_parodies().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["kantai collection"]);
         assert_eq!(doujin.get_characters().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["akizuki", "teitoku"]);
@@ -296,7 +296,7 @@ mod tests {
 
     #[test]
     fn doujin_all_fields() {
-        let doujin = Doujin::new(141506).unwrap();
+        let doujin = Gallery::new(141506).unwrap();
 
         assert_eq!(doujin.id, 141506);
         assert_eq!(doujin.media_id, 844469);
@@ -311,7 +311,7 @@ mod tests {
 
     #[test]
     fn doujin_title() {
-        let doujin = Doujin::new(304826).unwrap();
+        let doujin = Gallery::new(304826).unwrap();
 
         assert_eq!(doujin.title.english, "(C97) [DOLL PLAY (Kurosu Gatari)] Galar no Yoru no Sugata | Galar\\u2019s Night view (Pok\\u00e9mon Sword and Shield) [English] [Coffedrug]");
         assert_eq!(doujin.title.japanese, "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");

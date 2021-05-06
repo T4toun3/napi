@@ -135,7 +135,7 @@ impl SearchEntry {
         })
     }
 
-    pub fn fetch(&self) -> Option<Doujin> {
-        Doujin::new(self.id)
+    pub fn fetch(&self) -> Option<Gallery> {
+        Gallery::new(self.id)
     }
 }

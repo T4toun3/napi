@@ -8,7 +8,7 @@ use crate::tag::*;
 use crate::serde_utils::*;
 
 #[derive(Deserialize, Debug)]
-pub struct Doujin {
+pub struct Gallery {
     pub id: u32,
     #[serde(deserialize_with = "string_to_u32")]
     pub media_id: u32,
@@ -23,14 +23,14 @@ pub struct Doujin {
     pub similars: Vec<SearchEntry>,
 }
 
-impl Doujin {
+impl Gallery {
     pub fn new(id: u32) -> Option<Self> {
         let html = reqwest::blocking::get(&format!("http://nhentai.net/g/{}", id))
             .ok()?
             .text()
             .ok()?;
 
-        let mut doujin: Doujin = html
+        let mut doujin: Gallery = html
             .after("JSON.parse(\"")
             .before("\");")
             .map(|x| serde_json::from_str(&x.replace("\\u0022", "\"").replace("\\u002F", "/")).ok())
@@ -197,7 +197,7 @@ impl Doujin {
 
 use std::str::FromStr;
 
-impl FromStr for Doujin {
+impl FromStr for Gallery {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
