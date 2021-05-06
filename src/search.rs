@@ -4,7 +4,7 @@ use crate::string_utils::*;
 
 use std::ops::Range;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Search {
     pub pages: u16,
     pub current_page: u16,
@@ -110,7 +110,7 @@ impl Search {
     }
 }
 
-#[derive(serde::Deserialize, Debug, PartialEq)]
+#[derive(serde::Deserialize, Debug, PartialEq, Clone)]
 pub struct SearchEntry {
     pub thumb: String,
     pub id: u32,
