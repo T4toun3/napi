@@ -5,6 +5,7 @@ pub mod doujin;
 pub mod table;
 pub mod tag;
 pub mod search_args;
+pub mod serde_utils;
 
 #[cfg(test)]
 mod tests {
