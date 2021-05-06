@@ -74,7 +74,7 @@ mod tests {
             vec![
                 SearchArgs::Page(1),
                 SearchArgs::Sort(Sort::Recent),
-                SearchArgs::Text("\n\n".to_string(), true)
+                SearchArgs::Text("\"\"".to_string(), true)
             ]
         );
     }
@@ -193,6 +193,7 @@ mod tests {
         let mut search = Search::new(args).unwrap();
         search.merge_search_all_pages(); // On récupère toutes les autres pages dans la recherche et les ajoute dans entries en plus de la page précédente
         assert!(search.entries.len() > 80);
+        assert!(search.entries.len() < 100);
     }
 
     #[test]
