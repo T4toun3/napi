@@ -227,6 +227,10 @@ fn fn_impl_table_content(data: &Data) -> TokenStream {
                             self.#name.len()
                         }
 
+                        fn entries(&self) -> &Vec<Tag> {
+                            &self.#name
+                        }
+
                         fn sort_by_popularity(&mut self) {
                             self.#name.sort_by(|a, b| a.count.cmp(&b.count).reverse());
                         }
