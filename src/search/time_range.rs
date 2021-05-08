@@ -1,25 +1,33 @@
-
 use std::cmp::Ordering;
 use std::fmt;
+use std::ops::Bound;
 
 const MAX_HOURS: u16 = 4999;
 
-
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TimeRange {
-    start: Magnitude,
-    end: Magnitude,
+    start: Bound<Magnitude>,
+    end: Bound<Magnitude>,
 }
 
 impl fmt::Display for TimeRange {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if self.start.is_empty() {
-            write!(f, "uploaded:<{}", self.end)
-        } else if self.end.is_empty() {
-            write!(f, "uploaded:>{}", self.start)
-        } else {
-            write!(f, "uploaded:>{}+uploaded:<{}", self.start, self.end)
-        }
+        f.write_str(
+            vec![
+                match self.start {
+                    Bound::Included(ref mg) => format!("uploaded:>={}", mg),
+                    Bound::Excluded(ref mg) => format!("uploaded:>{}", mg),
+                    Bound::Unbounded => "".to_owned(),
+                },
+                match self.end {
+                    Bound::Included(ref mg) => format!("uploaded:<={}", mg),
+                    Bound::Excluded(ref mg) => format!("uploaded:<{}", mg),
+                    Bound::Unbounded => "".to_owned(),
+                },
+            ]
+            .join("+")
+            .as_str(),
+        )
     }
 }
 
@@ -27,8 +35,8 @@ impl From<Magnitude> for TimeRange {
     #[inline]
     fn from(magnitude: Magnitude) -> Self {
         Self {
-            start: magnitude,
-            end: Magnitude::Year(u16::MAX),
+            start: Bound::Included(magnitude),
+            end: Bound::Unbounded,
         }
     }
 }
@@ -41,56 +49,107 @@ impl From<(Magnitude, Magnitude)> for TimeRange {
             end = temp;
         }
         Self {
-            start,
-            end
+            start: Bound::Included(start),
+            end: Bound::Excluded(end),
         }
     }
 }
 
 impl TimeRange {
+    pub fn new(start: Bound<Magnitude>, end: Bound<Magnitude>) -> Self {
+        Self { start, end }
+    }
+
     #[inline]
-    fn from_years(years: u16) -> Self {
+    fn more_than_years(years: u16) -> Self {
         Self {
-            start: Magnitude::Year(years),
-            end: Magnitude::Year(u16::MAX),
+            start: Bound::Included(Magnitude::Year(years)),
+            end: Bound::Unbounded,
         }
     }
 
     #[inline]
-    fn from_months(months: u16) -> Self {
+    fn more_than_months(months: u16) -> Self {
         Self {
-            start: Magnitude::Month(months),
-            end: Magnitude::Year(u16::MAX),
+            start: Bound::Included(Magnitude::Month(months)),
+            end: Bound::Unbounded,
         }
     }
 
     #[inline]
-    fn from_weeks(weeks: u16) -> Self {
+    fn more_than_weeks(weeks: u16) -> Self {
         Self {
-            start: Magnitude::Week(weeks),
-            end: Magnitude::Year(u16::MAX),
-        }
-    }
-    
-    #[inline]
-    fn from_days(days: u16) -> Self {
-        Self {
-            start: Magnitude::Day(days),
-            end: Magnitude::Year(u16::MAX),
+            start: Bound::Included(Magnitude::Week(weeks)),
+            end: Bound::Unbounded,
         }
     }
 
     #[inline]
-    fn from_hours(hours: u16) -> Self {
+    fn more_than_days(days: u16) -> Self {
         Self {
-            start: Magnitude::Hour(hours).correct(),
-            end: Magnitude::Year(u16::MAX),
+            start: Bound::Included(Magnitude::Day(days)),
+            end: Bound::Unbounded,
+        }
+    }
+
+    #[inline]
+    fn more_than_hours(hours: u16) -> Self {
+        Self {
+            start: Bound::Included(Magnitude::Hour(hours).correct()),
+            end: Bound::Unbounded,
+        }
+    }
+    #[inline]
+    fn less_than_years(years: u16) -> Self {
+        Self {
+            start: Bound::Unbounded,
+            end: Bound::Excluded(Magnitude::Year(years)),
+        }
+    }
+
+    #[inline]
+    fn less_than_months(months: u16) -> Self {
+        Self {
+            start: Bound::Unbounded,
+            end: Bound::Excluded(Magnitude::Month(months)),
+        }
+    }
+
+    #[inline]
+    fn less_than_weeks(weeks: u16) -> Self {
+        Self {
+            start: Bound::Unbounded,
+            end: Bound::Excluded(Magnitude::Week(weeks)),
+        }
+    }
+
+    #[inline]
+    fn less_than_days(days: u16) -> Self {
+        Self {
+            start: Bound::Unbounded,
+            end: Bound::Excluded(Magnitude::Day(days)),
+        }
+    }
+
+    #[inline]
+    fn less_than_hours(hours: u16) -> Self {
+        Self {
+            start: Bound::Unbounded,
+            end: Bound::Excluded(Magnitude::Hour(hours).correct()),
         }
     }
 
     #[inline]
     fn is_empty(&self) -> bool {
-        self.start.is_empty() && self.end.is_empty()
+        (match self.start {
+            Bound::Included(ref mg) => mg.is_empty(),
+            Bound::Excluded(ref mg) => mg.is_empty(),
+            Bound::Unbounded => true,
+        } && match self.end {
+            Bound::Included(ref mg) => mg.is_empty(),
+            Bound::Excluded(ref mg) => mg.is_empty(),
+            Bound::Unbounded => true,
+        })
     }
 }
 
@@ -125,16 +184,16 @@ impl Magnitude {
                     self
                 }
             }
-            _ => self
+            _ => self,
         }
     }
 
     fn as_hours(&self) -> u32 {
         match self {
             Magnitude::Year(value) => *value as u32 * 8760,
-            Magnitude::Month(value) => *value as u32  * 730,
-            Magnitude::Week(value) => *value as u32  * 168,
-            Magnitude::Day(value) => *value as u32  * 24,
+            Magnitude::Month(value) => *value as u32 * 730,
+            Magnitude::Week(value) => *value as u32 * 168,
+            Magnitude::Day(value) => *value as u32 * 24,
             Magnitude::Hour(value) => *value as u32,
         }
     }
@@ -161,4 +220,3 @@ impl Ord for Magnitude {
         self.as_hours().cmp(&other.as_hours())
     }
 }
-
