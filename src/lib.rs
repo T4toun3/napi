@@ -11,7 +11,6 @@ mod tests {
 
     use chrono::NaiveDateTime;
 
-    use crate::table::*;
     use crate::{
         gallery::Gallery,
         tag::{Tag, TagType},
@@ -19,6 +18,7 @@ mod tests {
             Search,
             search_args::{SearchArgs, Sort}
         },
+        table::*
     };
 
     #[test]

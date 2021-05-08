@@ -1,12 +1,16 @@
-use crate::doujin::Doujin;
-use crate::search_args::*;
 use crate::string_utils::*;
+
 pub mod search_args;
 
 use std::ops::Range;
 
 #[derive(Debug, PartialEq, Clone)]
 use search_args::{SearchArgs, Sort};
+
+use crate::string_utils::*;
+use crate::gallery::Gallery;
+
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Search {
     pub pages: u16,
     pub current_page: u16,

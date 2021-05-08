@@ -1,3 +1,5 @@
+use std::str::FromStr;
+use std::fmt;
 use crate::tag::Tag;
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum SearchArgs {
