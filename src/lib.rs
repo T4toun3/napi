@@ -4,7 +4,6 @@ pub mod search;
 pub mod gallery;
 pub mod table;
 pub mod tag;
-pub mod search_args;
 pub mod serde_utils;
 
 #[cfg(test)]
@@ -12,12 +11,14 @@ mod tests {
 
     use chrono::NaiveDateTime;
 
-    use crate::search::Search;
-    use crate::search_args::{SearchArgs, Sort};
     use crate::table::*;
     use crate::{
         gallery::Gallery,
         tag::{Tag, TagType},
+        search::{
+            Search,
+            search_args::{SearchArgs, Sort}
+        },
     };
 
     #[test]

@@ -1,14 +1,14 @@
 use crate::tag::Tag;
-
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum SearchArgs {
     Page(u16),
     Sort(Sort),
     Text(String, bool),
+    Uploaded(TimeRange),
+    GalleryPages(Range<u16>),
     Tag(Tag, bool),
 }
 
-use std::str::FromStr;
 
 impl FromStr for SearchArgs {
     type Err = ();
@@ -18,6 +18,7 @@ impl FromStr for SearchArgs {
 
         Ok(match i.next().ok_or(())? {
             "page" => Self::Page(i.next().ok_or(())?.parse().map_err(|_| ())?),
+            // TODO: Parse 'q' to split text into the differents Arg
             "q" => Self::Text(i.next().ok_or(())?.to_owned(), true),
             "sort" => Self::Sort(i.next().ok_or(())?.parse().map_err(|_| ())?),
             _ => return Err(()),
@@ -25,8 +26,8 @@ impl FromStr for SearchArgs {
     }
 }
 
-impl std::fmt::Display for SearchArgs {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for SearchArgs {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Page(e) => write!(f, "page={}", e),
             Self::Sort(e) => write!(f, "sort={}", e),
@@ -34,6 +35,8 @@ impl std::fmt::Display for SearchArgs {
             Self::Tag(e, _) => match e._type {
                 _ => write!(f, "{}", e.name),
             },
+            Self::Uploaded(time_range) => write!(f, "{}", time_range),
+            Self::GalleryPages(range) => write!(f, "{}", range.display()),
         }
     }
 }
@@ -46,11 +49,22 @@ impl SearchArgs {
         } else {
             args.push(Self::Page(1));
         }
+        
         if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Sort(_))) {
             args.push(vec_args.remove(i));
         } else {
             args.push(Self::Sort(Sort::Recent));
         }
+
+        let mut buffer= vec![];
+        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Uploaded(_))) {
+            buffer.push(vec_args.remove(i));
+        }
+
+        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::GalleryPages(_))) {
+            buffer.push(vec_args.remove(i));
+        }
+        vec_args.append(&mut buffer);
 
         let mut text = vec_args
             .iter()
@@ -105,21 +119,6 @@ pub enum Sort {
     Recent,
 }
 
-impl std::fmt::Display for Sort {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Self::PopularWeek => "popular-week",
-                Self::PopularToday => "popular-today",
-                Self::PopularAllTime => "popular",
-                Self::Recent => "",
-            }
-        )
-    }
-}
-
 impl FromStr for Sort {
     type Err = ();
 
@@ -132,3 +131,4 @@ impl FromStr for Sort {
         })
     }
 }
+
