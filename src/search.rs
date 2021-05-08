@@ -1,10 +1,9 @@
-use crate::string_utils::*;
 
 pub mod search_args;
+pub mod time_range;
 
 use std::ops::Range;
 
-#[derive(Debug, PartialEq, Clone)]
 use search_args::{SearchArgs, Sort};
 
 use crate::string_utils::*;
@@ -116,7 +115,7 @@ impl Search {
     }
 }
 
-#[derive(serde::Deserialize, Debug, PartialEq, Clone)]
+#[derive(serde::Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct SearchEntry {
     pub thumb: String,
     pub id: u32,
