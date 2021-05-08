@@ -7,7 +7,8 @@
 - [x] Get popular gallery
 - [x] Add way to set a maximun of page research
 - [ ] Add ability to set default value (*ex: Set `Sort` to `PopularWeek`. `correct([Page(2)]) -> [Page(2), Sort::PopularWeek]`*)
-- [ ] Add time args
+- [x] Add time args
+- [ ] Add tests for TimeRange
 - [ ] Manage args
 
 ## Gallery
