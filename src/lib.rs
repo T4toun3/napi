@@ -241,12 +241,12 @@ mod tests {
 
     
     #[test]
-    fn random_doujin() {
+    fn random_gallery() {
         Gallery::random().unwrap();
     }
 
     #[test]
-    fn doujin_from_search() {
+    fn gallery_from_search() {
         let args = vec![
             SearchArgs::Page(2),
             SearchArgs::Text("hello".to_string(), true),
@@ -256,66 +256,66 @@ mod tests {
     }
 
     #[test]
-    fn new_doujin() {
-        let doujin = Gallery::new(224001).unwrap();
-        let img_urls = doujin.get_images_urls();
+    fn new_gallery() {
+        let gallery = Gallery::new(224001).unwrap();
+        let img_urls = gallery.get_images_urls();
         assert_eq!(img_urls.len(), 31);
         assert_eq!(img_urls[0], "https://i.nhentai.net/galleries/1183642/1.jpg");
     }
 
     #[test]
     fn similar() {
-        let doujin = Gallery::new(316932).unwrap();
-        assert_eq!(doujin.similars.len(), 5);
+        let gallery = Gallery::new(316932).unwrap();
+        assert_eq!(gallery.similars.len(), 5);
     }
 
     #[test]
-    fn doujin_image_and_page_url() {
-        let doujin = Gallery::new(327341).unwrap();
+    fn gallery_image_and_page_url() {
+        let gallery = Gallery::new(327341).unwrap();
 
-        assert_eq!(doujin.get_image_url_small(1).unwrap(), doujin.get_images_urls_small()[0], "https://t.nhentai.net/galleries/1723824/1t.jpg");
-        assert_eq!(doujin.get_image_url(10).unwrap(), "https://i.nhentai.net/galleries/1723824/10.jpg");
-        assert_eq!(doujin.get_images_urls()[3], "https://i.nhentai.net/galleries/1723824/4.jpg");
-        assert_eq!(doujin.get_image_cover(), "https://t.nhentai.net/galleries/1723824/cover.jpg");
-        assert_eq!(doujin.get_image_thumbnail(), "https://t.nhentai.net/galleries/1723824/thumb.jpg");
-        assert_eq!(doujin.get_page_url(5), "https://nhentai.net/g/327341/5/");
-        assert_eq!(doujin.get_pages_urls().len(), 126);
+        assert_eq!(gallery.get_image_url_small(1).unwrap(), gallery.get_images_urls_small()[0], "https://t.nhentai.net/galleries/1723824/1t.jpg");
+        assert_eq!(gallery.get_image_url(10).unwrap(), "https://i.nhentai.net/galleries/1723824/10.jpg");
+        assert_eq!(gallery.get_images_urls()[3], "https://i.nhentai.net/galleries/1723824/4.jpg");
+        assert_eq!(gallery.get_image_cover(), "https://t.nhentai.net/galleries/1723824/cover.jpg");
+        assert_eq!(gallery.get_image_thumbnail(), "https://t.nhentai.net/galleries/1723824/thumb.jpg");
+        assert_eq!(gallery.get_page_url(5), "https://nhentai.net/g/327341/5/");
+        assert_eq!(gallery.get_pages_urls().len(), 126);
     }
 
     #[test]
-    fn doujin_get_method_all() {
-        let doujin = Gallery::new(141506).unwrap();
+    fn gallery_get_method_all() {
+        let gallery = Gallery::new(141506).unwrap();
 
-        assert_eq!(doujin.get_parodies().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["kantai collection"]);
-        assert_eq!(doujin.get_characters().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["akizuki", "teitoku"]);
-        assert_eq!(doujin.get_tags().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["schoolgirl uniform", "nakadashi", "x-ray", "blowjob", "sole female", "sole male"]);
-        assert_eq!(doujin.get_artists().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["nakano sora"]);
-        assert_eq!(doujin.get_groups().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["in the sky"]);
-        assert_eq!(doujin.get_languages().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["translated", "chinese"]);
-        assert_eq!(doujin.get_category().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["doujinshi"]);
+        assert_eq!(gallery.get_parodies().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["kantai collection"]);
+        assert_eq!(gallery.get_characters().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["akizuki", "teitoku"]);
+        assert_eq!(gallery.get_tags().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["schoolgirl uniform", "nakadashi", "x-ray", "blowjob", "sole female", "sole male"]);
+        assert_eq!(gallery.get_artists().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["nakano sora"]);
+        assert_eq!(gallery.get_groups().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["in the sky"]);
+        assert_eq!(gallery.get_languages().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["translated", "chinese"]);
+        assert_eq!(gallery.get_category().iter().map(|t| t.name.clone()).collect::<Vec<_>>(), vec!["doujinshi"]);
     }
 
     #[test]
-    fn doujin_all_fields() {
-        let doujin = Gallery::new(141506).unwrap();
+    fn gallery_all_fields() {
+        let gallery = Gallery::new(141506).unwrap();
 
-        assert_eq!(doujin.id, 141506);
-        assert_eq!(doujin.media_id, 844469);
-        assert_eq!(doujin.title.english, "(C88) [In The Sky (Nakano Sora)] Shuuya ni Omou (Kantai Collection -KanColle-) [Chinese] [\\u5c4f\\u5e55\\u9ad2\\u4e86\\u6f22\\u5316\\u7d44]");
-        assert_eq!(doujin.upload_date, NaiveDateTime::parse_from_str("2015-08-21 13:13:16", "%Y-%m-%d %H:%M:%S").unwrap());
-        assert_eq!(doujin.tags.len(), 14);
-        assert_eq!(doujin.num_pages, 24);
-        assert_eq!(doujin.images.pages.len(), 24);
-        assert!(doujin.num_favorites > 400);
-        assert_eq!(doujin.similars.len(), 5);
+        assert_eq!(gallery.id, 141506);
+        assert_eq!(gallery.media_id, 844469);
+        assert_eq!(gallery.title.english, "(C88) [In The Sky (Nakano Sora)] Shuuya ni Omou (Kantai Collection -KanColle-) [Chinese] [\\u5c4f\\u5e55\\u9ad2\\u4e86\\u6f22\\u5316\\u7d44]");
+        assert_eq!(gallery.upload_date, NaiveDateTime::parse_from_str("2015-08-21 13:13:16", "%Y-%m-%d %H:%M:%S").unwrap());
+        assert_eq!(gallery.tags.len(), 14);
+        assert_eq!(gallery.num_pages, 24);
+        assert_eq!(gallery.images.pages.len(), 24);
+        assert!(gallery.num_favorites > 400);
+        assert_eq!(gallery.similars.len(), 5);
     }
 
     #[test]
-    fn doujin_title() {
-        let doujin = Gallery::new(304826).unwrap();
+    fn gallery_title() {
+        let gallery = Gallery::new(304826).unwrap();
 
-        assert_eq!(doujin.title.english, "(C97) [DOLL PLAY (Kurosu Gatari)] Galar no Yoru no Sugata | Galar\\u2019s Night view (Pok\\u00e9mon Sword and Shield) [English] [Coffedrug]");
-        assert_eq!(doujin.title.japanese, "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");
-        assert_eq!(doujin.title.pretty, "Galar no Yoru no Sugata | Galar\\u2019s Night view");
+        assert_eq!(gallery.title.english, "(C97) [DOLL PLAY (Kurosu Gatari)] Galar no Yoru no Sugata | Galar\\u2019s Night view (Pok\\u00e9mon Sword and Shield) [English] [Coffedrug]");
+        assert_eq!(gallery.title.japanese, "(C97) [DOLL PLAY (\\u9ed2\\u5de3\\u30ac\\u30bf\\u30ea)] \\u30ac\\u30e9\\u30eb\\u306e\\u591c\\u306e\\u3059\\u304c\\u305f (\\u30dd\\u30b1\\u30c3\\u30c8\\u30e2\\u30f3\\u30b9\\u30bf\\u30fc \\u30bd\\u30fc\\u30c9\\u30fb\\u30b7\\u30fc\\u30eb\\u30c9) [\\u82f1\\u8a33]");
+        assert_eq!(gallery.title.pretty, "Galar no Yoru no Sugata | Galar\\u2019s Night view");
     }
 }

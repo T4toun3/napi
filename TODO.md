@@ -4,13 +4,13 @@
 - [x] Add a macro to `impl Table` by using a procedural macro
 
 ## Search
-- [x] Get popular doujinshi
+- [x] Get popular gallery
 - [x] Add way to set a maximun of page research
 - [ ] Add ability to set default value (*ex: Set `Sort` to `PopularWeek`. `correct([Page(2)]) -> [Page(2), Sort::PopularWeek]`*)
 - [ ] Add time args
 - [ ] Manage args
 
-## Doujin
+## Gallery
 - [x] Cast `media_id` into `u32`
 
 ## Table
@@ -29,6 +29,6 @@
 
 # 2.0
 
-## Doujin
-- [ ] Create new doujin with similar doujin
+## Gallery
+- [ ] Create new gallery with similar gallery
     - impl manually Deserialize

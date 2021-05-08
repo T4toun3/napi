@@ -30,20 +30,20 @@ impl Gallery {
             .text()
             .ok()?;
 
-        let mut doujin: Gallery = html
+        let mut gallery: Gallery = html
             .after("JSON.parse(\"")
             .before("\");")
             .map(|x| serde_json::from_str(&x.replace("\\u0022", "\"").replace("\\u002F", "/")).ok())
             .flatten()?;
 
-        doujin.similars = html
+        gallery.similars = html
             .after("<h2>More Like This</h2>")
             .before("</div></div>")?
             .split(r#"<div class="gallery" data-tags=""#)
             .flat_map(|x| SearchEntry::new(x))
             .collect::<Vec<SearchEntry>>();
 
-        Some(doujin)
+        Some(gallery)
 
         // let text = html
         //     .after("JSON.parse(\"")
@@ -51,7 +51,7 @@ impl Gallery {
 
         // let dunjin = &mut serde_json::Deserializer::from_str(&text);
 
-        // let result: Result<Doujin, _> = serde_path_to_error::deserialize(dunjin);
+        // let result: Result<Gallery, _> = serde_path_to_error::deserialize(dunjin);
         // match result {
         //     Ok(_) => panic!("expected a type error"),
         //     Err(err) => {
