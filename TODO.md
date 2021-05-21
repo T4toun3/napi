@@ -17,19 +17,17 @@
 ## Table
 - [x] Add new method to access to the entries of a table
 
-## Rustianisation (en franglais)
-*Tout ce qui est écrit ici n'est que proposition et aucunement un plan pour le future de cette API*
-- [x] créer une `enum` pour les différents type de tag (tag, artist, parody...)
+## Future
 - [ ] ASYNC
 
 # GITHUB
-- [ ] Add how to use napi in the README file
+- [ ] Add how to use happi in the README file
 
 # CRATES.IO
-- [ ] Publish napi on [crates.io](crates.io)
-
-# 2.0
+- [ ] Publish happi on [crates.io](https://crates.io)
 
 ## Gallery
-- [ ] Create new gallery with similar gallery
-    - impl manually Deserialize
+- [x] Create new gallery with similar gallery
+
+## Other
+- [ ] look at the [hentai](https://crates.io/crates/hentai) crate
