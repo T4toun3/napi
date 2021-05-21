@@ -4,6 +4,7 @@ use std::ops::Bound;
 
 const MAX_HOURS: u16 = 4999;
 
+// ! I haven't done any test for this feature yet
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct TimeRange {
     start: Bound<Magnitude>,
