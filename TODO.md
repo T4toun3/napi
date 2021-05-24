@@ -13,6 +13,12 @@
 
 ## Gallery
 - [x] Cast `media_id` into `u32`
+- [ ] use this :
+```rust
+use chrono::{serde::ts_seconds, DateTime, Utc};
+#[serde(with = "ts_seconds")]
+pub upload_date: DateTime<Utc>,
+```
 
 ## Table
 - [x] Add new method to access to the entries of a table
