@@ -25,6 +25,7 @@ impl Search {
 
         let text = reqwest::blocking::get(url.as_str()).ok()?.text().ok()?;
 
+        // `unwrap` is safe because the first item of the vec return by `SearchArgs::correct` is always SearchArgs::Page
         let current_page = current_args[0].get_page().unwrap();
 
         let pages = text
