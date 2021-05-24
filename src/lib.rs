@@ -75,7 +75,7 @@ mod tests {
             vec![
                 SearchArgs::Page(1),
                 SearchArgs::Sort(Sort::Recent),
-                SearchArgs::Text("\"\"".to_string(), true)
+                SearchArgs::Text("\"\"".to_owned(), true)
             ]
         );
     }
@@ -83,15 +83,15 @@ mod tests {
     #[test]
     fn args_corretor_concat_text() {
         let args = vec![
-            SearchArgs::Text("loli".to_string(), true),
-            SearchArgs::Text("con".to_string(), true),
+            SearchArgs::Text("loli".to_owned(), true),
+            SearchArgs::Text("con".to_owned(), true),
         ];
         assert_eq!(
             SearchArgs::correct(args),
             vec![
                 SearchArgs::Page(1),
                 SearchArgs::Sort(Sort::Recent),
-                SearchArgs::Text("loli+con".to_string(), true)
+                SearchArgs::Text("loli+con".to_owned(), true)
             ]
         );
     }
@@ -99,15 +99,15 @@ mod tests {
     #[test]
     fn args_corretor_concat_text_minus() {
         let args = vec![
-            SearchArgs::Text("loli".to_string(), true),
-            SearchArgs::Text("con".to_string(), false),
+            SearchArgs::Text("loli".to_owned(), true),
+            SearchArgs::Text("con".to_owned(), false),
         ];
         assert_eq!(
             SearchArgs::correct(args),
             vec![
                 SearchArgs::Page(1),
                 SearchArgs::Sort(Sort::Recent),
-                SearchArgs::Text("loli+-con".to_string(), true)
+                SearchArgs::Text("loli+-con".to_owned(), true)
             ]
         );
     }
@@ -126,7 +126,7 @@ mod tests {
             vec![
                 SearchArgs::Page(5),
                 SearchArgs::Sort(Sort::PopularToday),
-                SearchArgs::Text("\"\"".to_string(), true)
+                SearchArgs::Text("\"\"".to_owned(), true)
             ]
         );
     }
@@ -189,7 +189,7 @@ mod tests {
     fn search_and_merge_all() {
         let args = vec![
             SearchArgs::Page(2),
-            SearchArgs::Text("hello".to_string(), true),
+            SearchArgs::Text("hello".to_owned(), true),
         ];
         let mut search = Search::new(args).unwrap();
         search.merge_search_all_pages(); // On récupère toutes les autres pages dans la recherche et les ajoute dans entries en plus de la page précédente
@@ -201,7 +201,7 @@ mod tests {
     fn search_and_merge_range() {
         let args = vec![
             SearchArgs::Page(2),
-            SearchArgs::Text("hello".to_string(), true),
+            SearchArgs::Text("hello".to_owned(), true),
         ];
         let mut search1 = Search::new(args).unwrap();
         let mut search2 =  search1.clone();
@@ -215,7 +215,7 @@ mod tests {
     fn search_and_merge_range_limited() {
         let args = vec![
             SearchArgs::Page(2),
-            SearchArgs::Text("hello".to_string(), true),
+            SearchArgs::Text("hello".to_owned(), true),
         ];
 
         let mut search1 = Search::new(args).unwrap();
@@ -249,7 +249,7 @@ mod tests {
     fn gallery_from_search() {
         let args = vec![
             SearchArgs::Page(2),
-            SearchArgs::Text("hello".to_string(), true),
+            SearchArgs::Text("hello".to_owned(), true),
         ];
         let search = Search::new(args).unwrap();
         search.entries[0].fetch().unwrap(); // On prend la première page de la recherche
