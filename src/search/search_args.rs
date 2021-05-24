@@ -1,8 +1,7 @@
-
-use std::str::FromStr;
 use std::fmt;
 use std::ops::RangeBounds;
 use std::ops::Bound;
+use std::str::FromStr;
 
 use super::range::Range;
 use crate::tag::Tag;
@@ -11,12 +10,96 @@ use crate::tag::Tag;
 pub enum SearchArgs {
     Page(u16),
     Sort(Sort),
-    Text(String, bool),
+    Text(String, bool), // text, used
+    // ! not finish
     Uploaded(Range<Magnitude>),
+    // use the marco page!() to generate Range<u16>
     GalleryPages(Range<u16>),
     Tag(Tag, bool),
 }
 
+    Tag(Tag, bool), // tag, used
+}
+
+}
+
+impl SearchArgs {
+    pub fn correct(mut vec_args: Vec<Self>) -> Vec<Self> {
+        let mut args: Vec<Self> = Vec::new();
+        // Page
+        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Page(_))) {
+            args.push(vec_args.remove(i));
+        } else {
+            args.push(Self::Page(1));
+        }
+
+        // Sort
+        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Sort(_))) {
+            args.push(vec_args.remove(i));
+        } else {
+            args.push(Self::Sort(Sort::Recent));
+        }
+
+        let mut buffer_uploaded_and_page = vec![];
+        // Uploaded
+        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Uploaded(_))) {
+            buffer_uploaded_and_page.push(vec_args.remove(i));
+        }
+
+        // GalleryPage
+        if let Some(i) = vec_args
+            .iter()
+            .position(|x| matches!(x, Self::GalleryPages(_)))
+        {
+            buffer_uploaded_and_page.push(vec_args.remove(i));
+        }
+        vec_args.append(&mut buffer);
+
+        // Text
+        let mut text = vec_args
+            .iter()
+            .filter(|x| match x {
+                SearchArgs::Text(_, _) | SearchArgs::Tag(_, _) => true,
+                _ => false,
+            })
+            .map(|arg| {
+                let mut string = String::new();
+                if !arg.used() {
+                    string.push('-')
+                }
+                match arg {
+                    SearchArgs::Text(text, _) => string.push_str(text.as_str()),
+                    SearchArgs::Tag(tag, _) => string
+                        .push_str(format!("{}:\"{}\"", tag._type.to_string(), tag.name).as_str()),
+                    _ => {}
+                }
+                string
+            })
+            .collect::<Vec<_>>()
+            .join("+");
+        if text.is_empty() {
+            text = "\"\"".to_owned();
+        }
+
+        args.push(SearchArgs::Text(text, true));
+        args
+    }
+
+    pub fn used(&self) -> bool {
+        match self {
+            SearchArgs::Text(_, used) => *used,
+            SearchArgs::Tag(_, used) => *used,
+            _ => true,
+        }
+    }
+
+    pub fn get_page(&self) -> Option<u16> {
+        match self {
+            SearchArgs::Page(page) => Some(*page),
+            _ => None,
+        }
+    }
+}
 
 impl FromStr for SearchArgs {
     type Err = ();
@@ -44,77 +127,7 @@ impl fmt::Display for SearchArgs {
                 _ => write!(f, "{}", e.name),
             },
             Self::Uploaded(time_range) => write!(f, "{}", time_range),
-            Self::GalleryPages(range) => write!(f, "{}", range.display()),
-        }
-    }
-}
-
-impl SearchArgs {
-    pub fn correct(mut vec_args: Vec<Self>) -> Vec<Self> {
-        let mut args: Vec<Self> = Vec::new();
-        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Page(_))) {
-            args.push(vec_args.remove(i));
-        } else {
-            args.push(Self::Page(1));
-        }
-        
-        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Sort(_))) {
-            args.push(vec_args.remove(i));
-        } else {
-            args.push(Self::Sort(Sort::Recent));
-        }
-
-        let mut buffer= vec![];
-        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::Uploaded(_))) {
-            buffer.push(vec_args.remove(i));
-        }
-
-        if let Some(i) = vec_args.iter().position(|x| matches!(x, Self::GalleryPages(_))) {
-            buffer.push(vec_args.remove(i));
-        }
-        vec_args.append(&mut buffer);
-
-        let mut text = vec_args
-            .iter()
-            .filter(|x| match x {
-                SearchArgs::Text(_, _) | SearchArgs::Tag(_, _) => true,
-                _ => false,
-            })
-            .map(|arg| {
-                let mut string = String::new();
-                if !arg.used() {
-                    string.push('-')
-                }
-                match arg {
-                    SearchArgs::Text(text, _) => string.push_str(text.as_str()),
-                    SearchArgs::Tag(tag, _) => string
-                        .push_str(format!("{}:\"{}\"", tag._type.to_string(), tag.name).as_str()),
-                    _ => {}
-                }
-                string
-            })
-            .collect::<Vec<_>>()
-            .join("+");
-        if text.is_empty() {
-            text = "\"\"".to_string();
-        }
-
-        args.push(SearchArgs::Text(text, true));
-        args
-    }
-
-    pub fn used(&self) -> bool {
-        match self {
-            SearchArgs::Text(_, used) => *used,
-            SearchArgs::Tag(_, used) => *used,
-            _ => true,
-        }
-    }
-
-    pub fn get_page(&self) -> Option<u16> {
-        match self {
-            SearchArgs::Page(page) => Some(*page),
-            _ => None,
+            Self::GalleryPages(range) => write!(f, "{}", range),
         }
     }
 }

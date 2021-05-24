@@ -1,4 +1,7 @@
 
+#![allow(dead_code)]
+#![feature(bound_as_ref)]
+
 mod string_utils;
 pub mod search;
 pub mod gallery;

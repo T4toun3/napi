@@ -1,6 +1,7 @@
 use std::cmp::Ordering;
 use std::fmt;
 use std::ops::Bound;
+use std::ops::RangeBounds;
 
 
 const MAX_HOURS: u16 = 4999;
