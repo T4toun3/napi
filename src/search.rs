@@ -1,6 +1,6 @@
 
 pub mod search_args;
-pub mod time_range;
+pub mod range;
 
 use std::ops::Range;
 

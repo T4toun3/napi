@@ -1,20 +1,18 @@
 
-use std::ops::Range;
 use std::str::FromStr;
 use std::fmt;
 use std::ops::RangeBounds;
 use std::ops::Bound;
 
+use super::range::Range;
 use crate::tag::Tag;
-use crate::search::time_range::TimeRange;
-
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum SearchArgs {
     Page(u16),
     Sort(Sort),
     Text(String, bool),
-    Uploaded(TimeRange),
+    Uploaded(Range<Magnitude>),
     GalleryPages(Range<u16>),
     Tag(Tag, bool),
 }
@@ -154,26 +152,5 @@ impl FromStr for Sort {
             "popular-week" => Self::PopularWeek,
             _ => Self::Recent,
         })
-    }
-}
-
-trait DisplayRange {
-    fn display(&self) -> String;
-}
-
-impl DisplayRange for Range<u16> {
-    fn display(&self) -> String {
-        format!("{}+{}",
-            match self.start_bound() {
-                Bound::Included(x) => format!("pages:>={}", x),
-                Bound::Excluded(x) => format!("pages:>{}", x),
-                Bound::Unbounded => "".to_owned()
-            },
-            match self.end_bound() {
-                Bound::Included(x) => format!("pages:<={}", x),
-                Bound::Excluded(x) => format!("pages:<{}", x),
-                Bound::Unbounded => "".to_owned()
-            },
-        )
     }
 }

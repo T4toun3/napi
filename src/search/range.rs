@@ -2,37 +2,68 @@ use std::cmp::Ordering;
 use std::fmt;
 use std::ops::Bound;
 
+
 const MAX_HOURS: u16 = 4999;
 
 // ! I haven't done any test for this feature yet
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct TimeRange {
-    start: Bound<Magnitude>,
-    end: Bound<Magnitude>,
+pub struct Range<T> {
+    pub start: Bound<T>,
+    pub end: Bound<T>,
 }
 
-impl fmt::Display for TimeRange {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(
-            vec![
-                match self.start {
-                    Bound::Included(ref mg) => format!("uploaded:>={}", mg),
-                    Bound::Excluded(ref mg) => format!("uploaded:>{}", mg),
-                    Bound::Unbounded => "".to_owned(),
-                },
-                match self.end {
-                    Bound::Included(ref mg) => format!("uploaded:<={}", mg),
-                    Bound::Excluded(ref mg) => format!("uploaded:<{}", mg),
-                    Bound::Unbounded => "".to_owned(),
-                },
-            ]
-            .join("+")
-            .as_str(),
-        )
+impl<T> RangeBounds<T> for Range<T> {
+    fn start_bound(&self) -> Bound<&T> {
+        self.start.as_ref()
+    }
+
+    fn end_bound(&self) -> Bound<&T> {
+        self.end.as_ref()
+    }
+
+    fn contains<U>(&self, _: &U) -> bool
+    where
+            T: PartialOrd<U>,
+            U: ?Sized + PartialOrd<T>, {
+        panic!("method containe` should not be use on `happi::search::Range`")
     }
 }
 
-impl From<Magnitude> for TimeRange {
+impl fmt::Display for Range<u16> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let from =             match self.start_bound() {
+            Bound::Included(ref mg) => format!("pages:>={}", mg),
+            Bound::Excluded(ref mg) => format!("pages:>{}", mg),
+            Bound::Unbounded => "".to_owned()
+        };
+        let to =             match self.end_bound() {
+            Bound::Included(ref mg) => format!("pages:<={}", mg),
+            Bound::Excluded(ref mg) => format!("pages:<{}", mg),
+            Bound::Unbounded => "".to_owned()
+        };
+        
+        write!(f, "{}{}{}", from, if !from.is_empty() && !to.is_empty() { "+" } else { "" },  to)
+    }
+}
+
+impl fmt::Display for Range<Magnitude> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let from =             match self.start_bound() {
+            Bound::Included(ref mg) => format!("uploaded:>={}", mg),
+            Bound::Excluded(ref mg) => format!("uploaded:>{}", mg),
+            Bound::Unbounded => "".to_owned()
+        };
+        let to =             match self.end_bound() {
+            Bound::Included(ref mg) => format!("uploaded:<={}", mg),
+            Bound::Excluded(ref mg) => format!("uploaded:<{}", mg),
+            Bound::Unbounded => "".to_owned()
+        };
+        
+        write!(f, "{}{}{}", from, if !from.is_empty() && !to.is_empty() { "+" } else { "" },  to)
+    }
+}
+
+impl From<Magnitude> for Range<Magnitude> {
     #[inline]
     fn from(magnitude: Magnitude) -> Self {
         Self {
@@ -42,7 +73,7 @@ impl From<Magnitude> for TimeRange {
     }
 }
 
-impl From<(Magnitude, Magnitude)> for TimeRange {
+impl From<(Magnitude, Magnitude)> for Range<Magnitude> {
     fn from((mut start, mut end): (Magnitude, Magnitude)) -> Self {
         if start < end {
             let temp = start;
@@ -56,7 +87,7 @@ impl From<(Magnitude, Magnitude)> for TimeRange {
     }
 }
 
-impl TimeRange {
+impl Range<Magnitude> {
     pub fn new(start: Bound<Magnitude>, end: Bound<Magnitude>) -> Self {
         Self { start, end }
     }
@@ -221,3 +252,4 @@ impl Ord for Magnitude {
         self.as_hours().cmp(&other.as_hours())
     }
 }
+
