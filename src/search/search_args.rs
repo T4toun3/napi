@@ -50,7 +50,6 @@ impl SearchArgs {
         {
             buffer_uploaded_and_page.push(vec_args.remove(i));
         }
-        vec_args.append(&mut buffer);
 
         // Text
         let mut text = vec_args
@@ -72,6 +71,7 @@ impl SearchArgs {
                 }
                 string
             })
+            .chain(buffer_uploaded_and_page.iter().map(|arg| arg.to_string()))
             .collect::<Vec<_>>()
             .join("+");
         if text.is_empty() {
