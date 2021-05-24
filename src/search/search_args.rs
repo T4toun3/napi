@@ -15,9 +15,6 @@ pub enum SearchArgs {
     Uploaded(Range<Magnitude>),
     // use the marco page!() to generate Range<u16>
     GalleryPages(Range<u16>),
-    Tag(Tag, bool),
-}
-
     Tag(Tag, bool), // tag, used
 }
 

@@ -6,6 +6,34 @@ use std::ops::RangeBounds;
 
 const MAX_HOURS: u16 = 4999;
 
+#[macro_export]
+macro_rules! pages {
+    (..) => {
+        Range::<u16>{ start: std::ops::Bound::Unbounded, end: std::ops::Bound::Unbounded}
+    };
+    (=>) => {
+        Range::<u16>{ start: std::ops::Bound::Unbounded, end: std::ops::Bound::Unbounded}
+    };
+    ($start:expr => $end:expr) => {
+        Range::<u16>{ start: std::ops::Bound::Included($start), end: std::ops::Bound::Excluded($end)}
+    };
+    (=> $end:expr) => {
+        Range::<u16>{ start: std::ops::Bound::Unbounded, end: std::ops::Bound::Excluded($end)}
+    };
+    ($start:expr =>) => {
+        Range::<u16>{ start: std::ops::Bound::Included($start), end: std::ops::Bound::Unbounded}
+    };
+    ($start:expr => =$end:expr) => {
+        Range::<u16>{ start: std::ops::Bound::Included($start), end: std::ops::Bound::Included($end)}
+    };
+    (=> =$end:expr) => {
+        Range::<u16>{ start: std::ops::Bound::Unbounded, end: std::ops::Bound::Included($end)}
+    };
+    ($unique:expr) => {
+        Range::<u16>{ start: std::ops::Bound::Included($unique), end: std::ops::Bound::Included($unique)}
+    };
+}
+
 // ! I haven't done any test for this feature yet
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Range<T> {
