@@ -1,8 +1,7 @@
 use std::fmt;
-use std::ops::RangeBounds;
-use std::ops::Bound;
 use std::str::FromStr;
 
+use super::range::Magnitude;
 use super::range::Range;
 use crate::tag::Tag;
 
@@ -18,6 +17,24 @@ pub enum SearchArgs {
     Tag(Tag, bool), // tag, used
 }
 
+#[test]
+fn correct_work_maybe() {
+    let args1 = vec![SearchArgs::Page(10), SearchArgs::Page(2), SearchArgs::Page(3)];
+    let args2 = vec![SearchArgs::Sort(Sort::PopularWeek), SearchArgs::Sort(Sort::PopularToday), SearchArgs::Sort(Sort::PopularWeek)];
+    assert_eq!(
+        SearchArgs::correct(args1),
+        vec![SearchArgs::Page(10), SearchArgs::Sort(Sort::Recent), SearchArgs::Text("\"\"".to_owned(), true)]
+    );
+    assert_eq!(
+        SearchArgs::correct(args2),
+        vec![SearchArgs::Page(1), SearchArgs::Sort(Sort::PopularWeek), SearchArgs::Text("\"\"".to_owned(), true)]
+    );
+
+    let args3 = vec![SearchArgs::Text("oui".to_owned(), true), SearchArgs::Text("non".to_owned(), false)];
+    assert_eq!(
+        SearchArgs::correct(args3),
+        vec![SearchArgs::Page(1), SearchArgs::Sort(Sort::Recent), SearchArgs::Text("oui+-non".to_owned(), true)]
+    );
 }
 
 impl SearchArgs {

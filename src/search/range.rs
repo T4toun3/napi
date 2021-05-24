@@ -282,3 +282,51 @@ impl Ord for Magnitude {
     }
 }
 
+mod tests {
+    #![allow(unused_imports)]
+    use super::*;
+
+    #[test]
+    fn macro_page_full() {
+        let range_1 = pages!(..);
+        let range_2 = pages!(=>);
+        assert_eq!(range_1, range_2);
+        assert_eq!(range_1.to_string(), "".to_string())
+    }
+
+    #[test] 
+    fn macro_page_from_to() {
+        let range = pages!(0 => 5);
+        assert_eq!(range.to_string(), "pages:>=0+pages:<5")
+    }
+
+    #[test] 
+    fn macro_page_from() {
+        let range = pages!(0 =>);
+        assert_eq!(range.to_string(), "pages:>=0")
+    }
+
+    #[test] 
+    fn macro_page_to() {
+        let range = pages!(=> 5);
+        assert_eq!(range.to_string(), "pages:<5")
+    }
+
+    #[test] 
+    fn macro_page_from_to_equal() {
+        let range = pages!(0 => =5);
+        assert_eq!(range.to_string(), "pages:>=0+pages:<=5")
+    }
+
+    #[test] 
+    fn macro_page_to_equal() {
+        let range = pages!(=> =5);
+        assert_eq!(range.to_string(), "pages:<=5")
+    }
+
+    #[test] 
+    fn macro_page_unique() {
+        let range = pages!(5 + 10);
+        assert_eq!(range.to_string(), "pages:>=15+pages:<=15")
+    }
+}
